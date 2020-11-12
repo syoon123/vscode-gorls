@@ -12,8 +12,8 @@ class StackedBarChartVis {
 
     vis.margin = { top: 20, right: 20, bottom: 20, left: 20 };
 
-    vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right,
-      vis.height = 500 - vis.margin.top - vis.margin.bottom;
+    vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
+    vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
     // SVG drawing area
     vis.svg = d3.select("#" + vis.parentElement).append("svg")
