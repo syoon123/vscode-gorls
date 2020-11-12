@@ -1,0 +1,29 @@
+#intro {
+  width: 100%;
+  height: 95vh;
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.5)), url('../img/intro_background.jpg');
+  background-position: center top;
+  background-size: cover;
+}
+
+#intro-text {
+  margin-top: 50vh;
+  color: whitesmoke;
+}
+
+#intro-paragraph {
+  font-size: large;
+}
+
+.visualization {
+  padding: 5vh;
+}
+
+#gaps {
+  width: 40vw;
+  height: 60vh;
+}
+
+body {
+  margin-bottom: 8vh;
+}

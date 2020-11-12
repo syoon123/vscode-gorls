@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Our Tech Industry Can Do Better</title>
+
+	<!-- Load CSS libraries -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+
+	<!-- GOOGLE FONTS -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<a class="navbar-brand" href="#intro">Gender and Mental Health in Tech</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Skip to a topic/visualization...
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="nav-link" href="#visualization1">Apparent Efficacy of Benefits</a>
+					<a class="nav-link" href="#visualization2">Stigma and Company Culture</a>
+					<a class="nav-link" href="#visualization3">Gender Representation</a>
+					<a class="nav-link" href="#visualization4">Gendered Mental Heath Insights (1)</a>
+					<a class="nav-link" href="#visualization5">Gendered Mental Heath Insights (2)</a>
+				</div>
+		</ul>
+		<a class="nav-link" href="#team">About Us</a>
+	</div>
+</nav>
+<div id="intro">
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<div id="intro-text">
+				<h1>Our Tech Industry Can Do Better</h1>
+				<p id="intro-paragraph">
+					[REPLACE THIS] As women in computer science, we have all felt frustrations within the tech industry and how
+					prevalent mental health issues can be. While tech companies are attempting to address the issue, it is clear
+					that the issue has not been resolved, and there are still greater steps we can take. Therefore, we would like
+					to investigate and highlight trends within the tech industry about mental health, specifically focusing on
+					trends across gendered and racialized categories and the efficacy of corporate benefits and wellness
+					programs. We also are curious about the impact of remote work on mental health within this industry. Our
+					current goals are to spread awareness about where the tech industry might be failing its employees and what
+					it can possibly do better.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="visualization" id="visualization1">
+	<div class="container">
+		<div class="row">
+			<h3>Apparent Efficacy of Mental Health Benefits at Tech Companies: Trends</h3>
+		</div>
+		<div class="row">
+			<div id="lineGraph"></div>
+		</div>
+	</div>
+</div>
+<div class="visualization" id="visualization2">
+	<div class="container">
+		<div class="row">
+			<h3>Stigma around Mental Health Issues and Other Aspects of Company/Industry Culture</h3>
+		</div>
+		<div class="row">
+			<div id="sankey"></div>
+		</div>
+	</div>
+</div>
+<div class="visualization" id="visualization3">
+	<div class="container">
+		<div class="row">
+			<h3>Gender Representation in Tech (among Survey Respondents)</h3>
+		</div>
+		<div class="row">
+			<div id="dots"></div>
+		</div>
+	</div>
+</div>
+<div class="visualization" id="visualization4">
+	<div class="container">
+		<div class="row">
+			<h3>Gendered Mental Heath Insights (1)</h3>
+		</div>
+		<div class="row">
+			<div id="stackedBarChart"></div>
+		</div>
+	</div>
+</div>
+<div class="visualization" id="visualization5">
+	<div class="container">
+		<div class="row">
+			<h3>Gendered Mental Heath Insights (2)</h3>
+		</div>
+		<div class="row">
+			<div id="gaps"></div>
+		</div>
+	</div>
+</div>
+
+<!-- embedding JS libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+<!-- d3 -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+<!-- own js files -->
+<script src="js/linegraphvis.js"></script>
+<script src="js/sankeyvis.js"></script>
+<script src="js/dotsvis.js"></script>
+<script src="js/stackedbarchartvis.js"></script>
+<script src="js/gapsvis.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
