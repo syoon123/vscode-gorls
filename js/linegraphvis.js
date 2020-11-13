@@ -62,6 +62,22 @@ class LineGraphVis {
   wrangleData() {
     let vis = this;
 
+    // Create a sequence of values from 0 - 98 (age: 1-99; array length: 99)
+    let companiesPerYear = d3.range(0, 6).map(function() {
+      return 0;
+    })
+
+    // // Iterate over each day
+    // vis.filteredData.forEach(d => {
+    //   d3.range(0, 99).forEach(i => {
+    //     if (i < 100) {
+    //       votesPerAge[i] += d.ages[i];
+    //     }
+    //   })
+    // });
+    //
+    // vis.displayData = votesPerAge;
+
     vis.updateVis();
   }
 
