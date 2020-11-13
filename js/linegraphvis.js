@@ -22,6 +22,40 @@ class LineGraphVis {
       .append("g")
       .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+    // Scales and axes
+    vis.x = d3.scaleTime()
+        .range([0, width]);
+
+    vis.y = d3.scaleLinear()
+        .range([height, 0]);
+
+    vis.xAxis = d3.axisBottom()
+        .scale(vis.x);
+
+    vis.yAxis = d3.axisLeft()
+        .scale(vis.y);
+
+    // Append the axes to the drawing area
+    svg.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", `translate(0, ${vis.height})`);
+    svg.append("g")
+        .attr("class", "axis y-axis");
+
+    // Axis titles
+    vis.svg.append("text")
+        .attr("x", -50)
+        .attr("y", -8)
+        .text("Time (Years)");
+    vis.svg.append("text")
+        .attr("x", vis.width - 5)
+        .attr("y", vis.height + 25)
+        .text("% of Companies With Benefits");
+
+    // Append a single path to the drawing area
+    svg.append("path")
+        .attr("class", "line");
+
     vis.wrangleData();
   }
 
