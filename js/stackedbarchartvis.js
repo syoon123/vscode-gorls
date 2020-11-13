@@ -54,7 +54,40 @@ class StackedBarChartVis {
     vis.y1 = d3.scaleBand()
 
     vis.z = d3.scaleOrdinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+        .domain(["male", "female", "other"])
+        .range(["#98abc5", "#8a89a6", "#7b6888"]);
+
+    let colors = ["#98abc5", "#8a89a6", "#7b6888"];
+    let genders = ["male", "female", "other"];
+
+    // Create group for chart
+    vis.g = vis.svg.append('g')
+        .attr('transform', `translate(0, 80)`);
+
+    // Create legend
+    vis.l = vis.svg.append("g")
+        .attr("class", "g-legend")
+        .attr("transform", "translate("+ (0) + "," + (40) + ")");
+    var size = 15;
+    vis.l.selectAll("legendBoxes")
+        .data(genders)
+        .enter()
+        .append("rect")
+        .attr("x", function(d,i){ return i * (size + 100)})
+        .attr("y", 0)
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function(d){ return vis.z(d)});
+    vis.l.selectAll("legendLabels")
+        .data(genders)
+        .enter()
+        .append("text")
+        .attr("x", function(d,i){ return size + 5 + i * (size + 100)})
+        .attr("y", 0 + size / 2)
+        .style("fill", function(d){ return vis.z(d)})
+        .text(function(d){ return d})
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
 
     vis.wrangleData();
   }
@@ -135,23 +168,16 @@ class StackedBarChartVis {
         .rangeRound([0, vis.x0.bandwidth()])
         .padding(0.2);
 
-    vis.z.domain(["male", "female", "other"]);
     vis.keys = vis.z.domain()
 
 
     vis.y.domain([0, 200]);
     // vis.y.domain([0, 100]);
 
-    console.log(vis.displayData);
-    console.log(vis.keys);
     var stackData = d3.stack()
         .keys(vis.keys)(vis.displayData)
-    console.log("stackData", stackData);
 
-    var g = vis.svg.append('g')
-        .attr('transform', `translate(0, 60)`);
-
-    var serie = g.selectAll(".serie")
+    var serie = vis.g.selectAll(".serie")
         .data(stackData)
         .enter().append("g")
         .attr("class", "serie")
@@ -169,12 +195,27 @@ class StackedBarChartVis {
         .attr("width", vis.x1.bandwidth())
         .on("click", function(d, i){ console.log("serie-rect click d", i, d); });
 
-    g.append("g")
+    serie.selectAll("text")
+        .data(stackData[2])
+        .enter().append("text")
+        .attr("class", "serie-text")
+        .attr("transform", function(d) {
+          return "translate(" + vis.x0(d.data.companySize) + ",0)"; })
+        .attr("x", function(d) { return vis.x1(d.data.selectedCategory) + (vis.x1.bandwidth() / 2); })
+        .attr("y", function(d) { return vis.y(d[1]) - 3; })
+        .style("font-size", "10px")
+        .style('fill', "black")
+        .attr('text-anchor', 'middle')
+        .text(function(d) {
+          return d.data.selectedCategory;
+        });
+
+    vis.g.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + vis.height + ")")
         .call(d3.axisBottom(vis.x0));
 
-    g.append("g")
+    vis.g.append("g")
         .attr("class", "axis")
         .call(d3.axisLeft(vis.y).ticks(null, "s"))
         .append("text")
