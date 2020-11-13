@@ -17,11 +17,8 @@ class StackedBarChartVis {
     // margin conventions
     vis.margin = { top: 20, right: 50, bottom: 100, left: 50 };
 
-    vis.width = 700;
-    vis.height = 300;
-
-    // vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
-    // vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
+    vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
+    vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
     // init drawing area
     vis.svg = d3.select("#" + vis.parentElement).append("svg")
@@ -102,7 +99,7 @@ class StackedBarChartVis {
     // manually set company size value for order
     vis.companySizeValues = ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"];
 
-    console.log(vis.companySizeValues);
+    // console.log(vis.companySizeValues);
 
     vis.companySizeValues.forEach(function(companySize) {
       vis.selectedCategoryValues.forEach(function(selectedCategory) {

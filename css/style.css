@@ -19,6 +19,11 @@
   padding: 10vh;
 }
 
+#stackedBarChart {
+  width: 55vw;
+  height: 60vh;
+}
+
 #gaps {
   width: 40vw;
   height: 60vh;
