@@ -24,10 +24,10 @@ class LineGraphVis {
 
     // Scales and axes
     vis.x = d3.scaleTime()
-        .range([0, width]);
+        .range([0, vis.width]);
 
     vis.y = d3.scaleLinear()
-        .range([height, 0]);
+        .range([vis.height, 0]);
 
     vis.xAxis = d3.axisBottom()
         .scale(vis.x);
@@ -36,10 +36,10 @@ class LineGraphVis {
         .scale(vis.y);
 
     // Append the axes to the drawing area
-    svg.append("g")
+    vis.svg.append("g")
         .attr("class", "axis x-axis")
         .attr("transform", `translate(0, ${vis.height})`);
-    svg.append("g")
+    vis.svg.append("g")
         .attr("class", "axis y-axis");
 
     // Axis titles
@@ -53,7 +53,7 @@ class LineGraphVis {
         .text("% of Companies With Benefits");
 
     // Append a single path to the drawing area
-    svg.append("path")
+    vis.svg.append("path")
         .attr("class", "line");
 
     vis.wrangleData();
