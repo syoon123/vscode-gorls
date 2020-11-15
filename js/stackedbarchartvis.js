@@ -15,7 +15,7 @@ class StackedBarChartVis {
     vis.companySizeLabel = "How many employees does your company or organization have?";
 
     // margin conventions
-    vis.margin = { top: 20, right: 50, bottom: 100, left: 50 };
+    vis.margin = { top: 20, right: 50, bottom: 130, left: 50 };
 
     vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
     vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -167,9 +167,7 @@ class StackedBarChartVis {
 
     vis.keys = vis.z.domain()
 
-
-    vis.y.domain([0, 200]);
-    // vis.y.domain([0, 100]);
+    vis.y.domain([0, 180]);
 
     var stackData = d3.stack()
         .keys(vis.keys)(vis.displayData)
@@ -207,21 +205,34 @@ class StackedBarChartVis {
           return d.data.selectedCategory;
         });
 
+    // Add x-axis
     vis.g.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + vis.height + ")")
         .call(d3.axisBottom(vis.x0));
 
+    // Add x-axis label
+    vis.g.append("text")
+        .attr("class", "axisLabel")
+        .attr("transform",
+            "translate(" + (vis.width/2) + " ," +
+            (vis.height + vis.margin.top + 20) + ")")
+        .style("text-anchor", "middle")
+        .text("Company Size");
+
+    // Add y-axis
     vis.g.append("g")
         .attr("class", "axis")
-        .call(d3.axisLeft(vis.y).ticks(null, "s"))
-        .append("text")
-        .attr("x", 2)
-        .attr("y", vis.y(vis.y.ticks().pop()) + 0.5)
-        .attr("dy", "0.32em")
-        .attr("fill", "#000")
-        .attr("font-weight", "bold")
-        .attr("text-anchor", "start")
+        .call(d3.axisLeft(vis.y).ticks(null, "s"));
+
+    // Add y-axis label
+    vis.g.append("text")
+        .attr("class", "axisLabel")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - vis.margin.left)
+        .attr("x", 0 - (vis.height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
         .text("# of Survey Respondents");
   }
 }
