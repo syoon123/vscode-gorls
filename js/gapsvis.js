@@ -158,8 +158,8 @@ class GapsVis {
     })
 
     function calculate_gap(question, gender_category) {
-      return 100 * (vis.gender_counts[gender_category] / vis.gender_counts.total -
-        vis.counts[question][gender_category] / vis.counts[question].total);
+      return 100 * (vis.counts[question][gender_category] / vis.counts[question].total -
+        vis.gender_counts[gender_category] / vis.gender_counts.total);
     }
 
     vis.displayData = [];
