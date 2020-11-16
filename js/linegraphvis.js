@@ -62,21 +62,43 @@ class LineGraphVis {
   wrangleData() {
     let vis = this;
 
+    vis.displayData = [];
+
     // Create a sequence of values from 0 - 98 (age: 1-99; array length: 99)
-    let companiesPerYear = d3.range(0, 6).map(function() {
+    let companiesWithBenefits = d3.range(0, 6).map(function() {
       return 0;
     })
 
-    // // Iterate over each day
+    let companiesNoBenefits = d3.range(0, 6).map(function () {
+      return 0;
+    })
+
+    // TODO: FILTER DATA BY BENEFITS/NO BENEFITS
+    let offerBenefits = "Does your employer provide mental health benefits as part of healthcare coverage?"
+    let offerResources = "Does your employer offer resources to learn more about mental health concerns and options for seeking help?"
+    vis.counts = {
+      2016: 0,
+      2017: 0,
+      2018: 0,
+      2019: 0,
+      2020: 0
+    };
+    vis.data.forEach(d, i => {
+      if (d[offerBenefits]) {
+        vis.counts[Object.keys(vis.data)[i]] += 1;
+      }
+    })
+
+    // TODO: CREATE STRUCT FOR # WITH MH DISORDER BY YEAR
+
+    // Iterate over each day
     // vis.filteredData.forEach(d => {
-    //   d3.range(0, 99).forEach(i => {
-    //     if (i < 100) {
-    //       votesPerAge[i] += d.ages[i];
+    //   d3.range(0, 6).forEach(i => {
+    //     if (d[years[i]) {
+    //       companiesWithBenefits[i] += d.ages[i];
     //     }
     //   })
     // });
-    //
-    // vis.displayData = votesPerAge;
 
     vis.updateVis();
   }
