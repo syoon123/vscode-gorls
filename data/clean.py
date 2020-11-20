@@ -7,7 +7,7 @@ gender_columns = {
     '2017': 113,
     '2018': 113,
     '2019': 76,
-    '2020': 113
+#     '2020': 113
 }
 
 all_genders_set = {"female", "male"}
