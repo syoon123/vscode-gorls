@@ -62,6 +62,8 @@ class LineGraphVis {
     vis.tooltip = d3.select("body").append('div')
         .attr('class', "tooltip line-tooltip");
 
+    // test comment
+
     vis.wrangleData();
   }
 
