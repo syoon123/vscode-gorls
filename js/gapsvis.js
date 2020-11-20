@@ -1,10 +1,96 @@
+const questions = {
+  '2016': {
+    'My company takes mental and physical health equally seriously.': {
+      'question': "Do you feel that your employer takes mental health as seriously as physical health?",
+      'positive_responses': ['Yes']
+    },
+    'My employer has formally discussed mental health. ': {
+      'question': "Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?",
+      'positive_responses': ['Yes']
+    },
+    'My employer provides mental health benefits.': {
+      'question': "Does your employer provide mental health benefits as part of healthcare coverage?",
+      'positive_responses': ['Yes']
+    },
+    'My anonymity is protected should I take advantage of employer-provided resources.': {
+      'question': "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources provided by your employer?",
+      'positive_responses': ['No']
+    },
+    'I have not observed negative consequences for being open about mental health issues in the workplace.': {
+      'question': "Have you heard of or observed negative consequences for co-workers who have been open about mental health issues in your workplace?",
+      'positive_responses': ['No']
+    },
+    'It is easy to request medical leave for mental health issues.': {
+      'question': "If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:",
+      'positive_responses': ['Very easy']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my coworkers.': {
+      'question': "Would you feel comfortable discussing a mental health disorder with your coworkers?",
+      'positive_responses': ['Yes']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my direct superior.': {
+      'question': "Would you feel comfortable discussing a mental health disorder with your direct supervisor(s)?",
+      'positive_responses': ['Yes']
+    }
+  },
+  'other': {
+    'My company takes mental and physical health equally seriously.': {
+      'question': "Would you feel more comfortable talking to your coworkers about your physical health or your mental health?",
+      'positive_responses': ['Same level of comfort for each']
+    },
+    'My employer has formally discussed mental health. ': {
+      'question': "Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?",
+      'positive_responses': ['Yes']
+    },
+    'My employer provides mental health benefits.': {
+      'question': "Does your employer provide mental health benefits as part of healthcare coverage?",
+      'positive_responses': ['Yes']
+    },
+    'My anonymity is protected should I take advantage of employer-provided resources.': {
+      'question': "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources provided by your employer?",
+      'positive_responses': ['No']
+    },
+    'I have not observed negative consequences for being open about mental health issues in the workplace.': {
+      'question': "Have your observations of how another individual who discussed a mental health issue made you less likely to reveal a mental health issue yourself in your current workplace?",
+      'positive_responses': ['No']
+    },
+    'It is easy to request medical leave for mental health issues.': {
+      'question': "If a mental health issue prompted you to request a medical leave from work, how easy or difficult would it be to ask for that leave?",
+      'positive_responses': ['Very easy']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my coworkers.': {
+      'question': "Would you feel comfortable discussing a mental health issue with your coworkers?",
+      'positive_responses': ['Yes']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my direct superior.': {
+      'question': "Would you feel comfortable discussing a mental health issue with your direct supervisor(s)?",
+      'positive_responses': ['Yes']
+    }
+  },
+}
+
+const question_order = [
+  'My company takes mental and physical health equally seriously.',
+  'My employer has formally discussed mental health. ',
+  'My employer provides mental health benefits.',
+  'It is easy to request medical leave for mental health issues.',
+  'My anonymity is protected should I take advantage of employer-provided resources.',
+  'I have not observed negative consequences for being open about mental health issues in the workplace.',
+  'I\'d feel comfortable discussing a mental health issue with my coworkers.',
+  'I\'d feel comfortable discussing a mental health issue with my direct superior.',
+]
+
 class GapsVis {
+  aggregate(gapsData) {
+    Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
+    function flatten(a) { return [].concat.apply([], a); }
+    return flatten(Object.values(gapsData));
+  }
+
   constructor(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
-    Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
-    function flatten(a) { return [].concat.apply([], a); }
-    this.filteredData = flatten(Object.values(this.data));
+    this.filteredData = this.aggregate(this.data);
 
     this.initVis();
   }
@@ -39,7 +125,8 @@ class GapsVis {
       .range([vis.width/2, vis.width]);
 
     vis.xAxis = d3.axisLeft()
-      .scale(vis.x0);
+      .scale(vis.x0)
+      .tickFormat((q, index) => question_order[index]);
 
     vis.yAxis = d3.axisTop()
       .scale(vis.y);
@@ -61,18 +148,18 @@ class GapsVis {
   wrangleData() {
     let vis = this;
 
-    // TODO: FIX THIS!!
-    // let selectedYear = $('#gapsYearSelector').val();
-    // let selectedCompanySize = $('#gapsCompanySizeSelector').val();
-    //
-    // if (selectedYear) {
-    //   vis.filteredData = vis.data[selectedYear];
-    // }
-    // if (selectedCompanySize) {
-    //   vis.filteredData = vis.filteredData.filter(
-    //     d => d['How many employees does your company or organization have?'] === selectedCompanySize
-    //   )
-    // }
+    let selectedYear = $('#gapsYearSelector').val();
+    let selectedCompanySize = $('#gapsCompanySizeSelector').val();
+
+    vis.filteredData = vis.aggregate(vis.data);
+    if (selectedYear) {
+      vis.filteredData = vis.data[selectedYear];
+    }
+    if (selectedCompanySize) {
+      vis.filteredData = vis.filteredData.filter(
+        d => d['How many employees does your company or organization have?'] === selectedCompanySize
+      )
+    }
 
     vis.gender_counts = {
       'total': 0,
@@ -80,64 +167,18 @@ class GapsVis {
       'f': 0,
       'tnco': 0// Trans/Gender non-conforming/Other
     }
-    vis.counts = {
-      "Do you feel that your employer takes mental health as seriously as physical health?": {
-        "positive_responses": ["Yes"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?": {
-        "positive_responses": ["Yes"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Does your employer provide mental health benefits as part of healthcare coverage?": {
-        "positive_responses": ["Yes"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources provided by your employer?": {
-        "positive_responses": ["Yes"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Have you heard of or observed negative consequences for co-workers who have been open about mental health issues in your workplace?": {
-        "positive_responses": ["No"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:": {
-        "positive_responses": ["Very easy"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Would you feel comfortable discussing a mental health disorder with your coworkers?": {
-        "positive_responses": ["Yes"],
-        "total": 0,
-        "m": 0,
-        "f": 0,
-        "tnco": 0
-      },
-      "Would you feel comfortable discussing a mental health disorder with your direct supervisor(s)?": {
-        "positive_responses": ["Yes"],
+    vis.counts = {}
+    const qs = selectedYear === '2016' ? questions[selectedYear] : questions['other'];
+    question_order.forEach(q => {
+      vis.counts[q] = {
+        'positive_responses': qs[q].positive_responses,
         "total": 0,
         "m": 0,
         "f": 0,
         "tnco": 0
       }
-    };
+    });
+
     vis.filteredData.forEach(d => {
       let gender;
       if (d["What is your gender?"] === "male") {
@@ -149,15 +190,35 @@ class GapsVis {
       }
       vis.gender_counts.total += 1;
       vis.gender_counts[gender] += 1;
-      Object.keys(vis.counts).forEach(q => {
-        if (vis.counts[q].positive_responses.includes(d[q])) {
-          vis.counts[q].total += 1;
-          vis.counts[q][gender] += 1;
+
+      question_order.forEach(question => {
+        let q;
+        if (selectedYear === '') {
+          Object.keys(questions).forEach(yr => {
+            q = questions[yr][question].question;
+            if (vis.counts[question].positive_responses.includes(d[q])) {
+              vis.counts[question].total += 1;
+              vis.counts[question][gender] += 1;
+            }
+          })
+        } else {
+          if (selectedYear === '2016') {
+            q = questions[selectedYear][question].question;
+          } else {
+            q = questions['other'][question].question;
+          }
+          if (vis.counts[question].positive_responses.includes(d[q])) {
+            vis.counts[question].total += 1;
+            vis.counts[question][gender] += 1;
+          }
         }
-      })
+      });
     })
 
     function calculate_gap(question, gender_category) {
+      if (vis.gender_counts.total === 0 || vis.counts[question].total === 0) {
+        return 0;
+      }
       return 100 * (vis.counts[question][gender_category] / vis.counts[question].total -
         vis.gender_counts[gender_category] / vis.gender_counts.total);
     }
@@ -200,41 +261,47 @@ class GapsVis {
     vis.svg.select(".x-axis").call(vis.xAxis)
       .selectAll('text')
       .attr('transform', function() {
-        // return `translate(${vis.width * -0.75  + this.getComputedTextLength()}, 0)`
-        return `translate(${-vis.width * 0.15}, 0)`  // TODO: Figure out multi-line tick labels
+        // return `translate(${vis.width * -0.55  + this.getComputedTextLength()}, 0)`
+        return `translate(${-vis.width * 0.25}, 0)`
       });
-    vis.svg.select(".y-axis").call(vis.yAxis);
+    vis.svg.select(".y-axis").transition().call(vis.yAxis);
 
     console.log(vis.displayData);
     let barGroup = vis.svg.selectAll(".barGroup").data(vis.displayData);
     barGroup.enter().append("g").attr('class', 'barGroup')
       .merge(barGroup)
-      .attr("transform", function(d) { return `translate(0, ${vis.x0(d.question)})`; })
-      .selectAll("rect")
-      .data(function(d) { return vis.genders.map(function(key) { return {key: key, value: d[key]}; }); })
-      .enter().append("rect")
+      .attr("transform", function(d) { return `translate(0, ${vis.x0(d.question)})`; });
+    barGroup.exit().remove();
+
+    let bars = vis.svg.selectAll('.barGroup')
+      .selectAll(".bar")
+      .data(function(d) { return vis.genders.map(function(key) { return {key: key, value: d[key]}; }); });
+    bars.enter().append("rect").attr('class', 'bar')
+      .merge(bars)
       .attr("y", function(d) { return vis.x1(d.key); })
       .attr("height", vis.x1.bandwidth())
       .attr("fill", function(d) { return vis.color(d.key); })
-      .attr("x", function(d) {
+      .on('mouseover', )
+      .each(function(d) {
         if (d.value < 0) {
-          return vis.y(d.value);
+          d3.select(this)
+            .attr('x', vis.width * 0.75)
+            .attr('width', 0)
+            .transition()
+            .attr('width', vis.width * 0.75 - vis.y(d.value))
+            .attr('x', vis.y(d.value));
         } else {
-          return vis.width * 0.75;
-        }
-      })
-      .transition()  // TODO: Fix this
-      .attr("width", function(d) {
-        if (d.value < 0) {
-          return vis.width * 0.75 - vis.y(d.value);
-        } else {
-          return vis.y(d.value) - vis.width * 0.75;
+          d3.select(this)
+            .attr('x', vis.width * 0.75)
+            .attr('width', 0)
+            .transition()
+            .attr('width', vis.y(d.value) - vis.width * 0.75);
         }
       });
 
-    // TODO: Add tooltip
+    bars.exit().remove();
 
-    barGroup.exit().remove();
+    // TODO: Add tooltip
 
   }
 }
