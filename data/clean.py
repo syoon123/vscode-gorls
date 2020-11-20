@@ -17,13 +17,13 @@ female_set  = {"female", "Woman", "Female (cis)", "woman", "Cis Female", "cis-fe
     " Female", "Cis-woman", "femalw", "cis female", "female (cis)", "F, cisgender", "female (cisgender)",
     "femail", "cis-Female", "Female (cis) ", "cis woman", "Cis-Female", "Cis woman", "Female (cisgender)",
     "cisgender female", "Cisgendered woman", 'I identify as female', 'Woman-identified', 'My sex is female.',
-    'Femile', 'femmina', 'fm', 'I identify as female.', 'Cisgender Female', "fem"}
+    'Femile', 'femmina', 'fm', 'I identify as female.', 'Cisgender Female', "fem", 'Femake'}
 male_set = {"Mail", "Male (CIS)", "Cis Man", "Cis Male", "Man", "Male", "cis male", "Male ", "male",
-    "Malr", "male ", "M", "m", "Male.", "cis man", 'male, born with xy chromosoms',
+    "Malr", "male ", "M", "m", "Male.", "cis man", 'male, born with xy chromosoms', 'Mal',
     "I'm a man why didn't you make this a drop down question. You should of asked sex? And I would of answered yes please. Seriously how much text can this take? ",
     "man", "mail", "M|", "Cis male", "Male (cis)", "MALE", "Sex is male", "cis male ", "cis-male", "Cis-male",
-    "male (hey this is the tech industry you're talking about)", "Male, cis", "Make", "CIS Male", "Malel",
-    "Cisgender male", 'SWM', 'cis hetero male', 'Identify as male', 'cisdude', 'dude', 'Dude', 'Cishet male'}
+    "male (hey this is the tech industry you're talking about)", "Male, cis", "Make", "CIS Male", "Malel", 'maile',
+    'masculino', "Cisgender male", 'SWM', 'cis hetero male', 'Identify as male', 'cisdude', 'dude', 'Dude', 'Cishet male'}
 
 def clean(year):
     # csv file name
@@ -74,6 +74,8 @@ def clean(year):
             row[gender_column] = "female"
         elif (row[gender_column] in male_set):
             row[gender_column] = "male"
+        elif (row[gender_column] == ''):
+            row[gender_column] = '(gender identity left blank)'
         filtered_genders_set.add(row[gender_column])
 
     print("Genders before filter")

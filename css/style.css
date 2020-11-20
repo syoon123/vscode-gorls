@@ -23,6 +23,12 @@
   padding: 10vh;
 }
 
+#dots {
+  width: 50vw;
+  height: 90vh;
+  /*background-color: lightgray;*/
+}
+
 #stackedBarChart {
   width: 55vw;
   height: 60vh;
@@ -33,22 +39,32 @@
   height: 87vh;
 }
 
-.tooltip {
+.tooltip, .dots-tooltip {
   position: absolute;
   text-align: left;
   padding-top: 10px;
-  padding-left: 8px;
-  padding-right: 8px;
-  width: 220px;
+
   height: fit-content;
   background: whitesmoke;
-  font: 12px sans-serif;
   border-radius: 8px;
   font-family: 'Roboto Mono', monospace;
+}
+
+.tooltip {
+  width: 220px;
+  padding-left: 8px;
+  padding-right: 8px;
   font-size: xx-small;
 }
 
-.tooltip b {
+.dots-tooltip {
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: small;
+}
+
+b {
   background-color: yellow;
 }
 

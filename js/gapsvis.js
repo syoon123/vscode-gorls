@@ -289,33 +289,23 @@ class GapsVis {
       });
     })
 
-    function calculate_gap(question, gender_category) {
-      if (vis.gender_counts.total === 0 || vis.counts[question].total === 0) {
-        return 0;
+    function calculate_gap(q, gender_category) {
+      const pos = vis.counts[q].total !== 0 ? 100 * vis.counts[q][gender_category] / vis.counts[q].total : 0;
+      const tot = vis.gender_counts.total !== 0 ? 100 * vis.gender_counts[gender_category] / vis.gender_counts.total : 0;
+      return {
+        'positive_proportion': pos,
+        'total_proportion': tot,
+        'gap': pos - tot
       }
-      return 100 * (vis.counts[question][gender_category] / vis.counts[question].total -
-        vis.gender_counts[gender_category] / vis.gender_counts.total);
     }
 
     vis.displayData = [];
     Object.keys(vis.counts).forEach(q => {
       vis.displayData.push({
         'question': q,
-        'men': {
-          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['m'] / vis.counts[q].total : 0,
-          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['m'] / vis.gender_counts.total : 0,
-          'gap': calculate_gap(q, 'm'),
-        },
-        'women': {
-          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['f'] / vis.counts[q].total : 0,
-          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['f'] / vis.gender_counts.total : 0,
-          'gap': calculate_gap(q, 'f'),
-        },
-        'trans, gender non-conforming, other': {
-          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['tnco'] / vis.counts[q].total : 0,
-          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['tnco'] / vis.gender_counts.total : 0,
-          'gap': calculate_gap(q, 'tnco'),
-        }
+        'men': calculate_gap(q, 'm'),
+        'women': calculate_gap(q, 'f'),
+        'trans, gender non-conforming, other': calculate_gap(q, 'tnco'),
       })
     })
 
