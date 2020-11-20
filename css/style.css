@@ -23,6 +23,10 @@
   padding: 10vh;
 }
 
+#lineGraph {
+  width: 55vw;
+  height: 60vh;
+}
 #stackedBarChart {
   width: 55vw;
   height: 60vh;

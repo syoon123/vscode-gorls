@@ -35,7 +35,7 @@ class LineGraphVis {
     vis.yAxis = d3.axisLeft()
         .scale(vis.y);
 
-    // Append the axes to the drawing area
+    // Append axes groups to the drawing area
     vis.svg.append("g")
         .attr("class", "axis x-axis")
         .attr("transform", `translate(0, ${vis.height})`);
@@ -53,8 +53,13 @@ class LineGraphVis {
         .text("% of Companies With Benefits");
 
     // Append a single path to the drawing area
-    vis.svg.append("path")
-        .attr("class", "line");
+    vis.linePath = vis.svg.append("path")
+        .attr("class", "line benefits-line");
+    // Define the D3 line generator
+    vis.line = d3.line()
+        .x(d => vis.x(d.year))
+        .y(d => vis.y(d.proportion))
+        .curve(d3.curveLinear);
 
     vis.wrangleData();
   }
@@ -64,47 +69,67 @@ class LineGraphVis {
 
     vis.displayData = [];
 
-    // Create a sequence of values from 0 - 98 (age: 1-99; array length: 99)
-    let companiesWithBenefits = d3.range(0, 6).map(function() {
-      return 0;
-    })
-
-    let companiesNoBenefits = d3.range(0, 6).map(function () {
-      return 0;
-    })
-
     // TODO: FILTER DATA BY BENEFITS/NO BENEFITS
     let offerBenefits = "Does your employer provide mental health benefits as part of healthcare coverage?"
-    let offerResources = "Does your employer offer resources to learn more about mental health concerns and options for seeking help?"
-    vis.counts = {
-      2016: 0,
-      2017: 0,
-      2018: 0,
-      2019: 0,
-      2020: 0
-    };
-    vis.data.forEach(d, i => {
-      if (d[offerBenefits]) {
-        vis.counts[Object.keys(vis.data)[i]] += 1;
-      }
-    })
 
-    // TODO: CREATE STRUCT FOR # WITH MH DISORDER BY YEAR
+    // TODO: MAKE COUNTS INTO PROPORTIONS
+    Object.keys(vis.data).forEach( (year, i) => {
+      console.log(year, vis.data[year])
+      vis.displayData.push(
+          {
+            year: year,
+            proportion: 0
+          }
+      );
+      let count = 0;
+      vis.data[year].forEach( d => {
+        if (d[offerBenefits] === "Yes") {
+          count += 1;
+        }
+      })
+      vis.displayData[i].proportion = count / vis.data[year].length;
+    });
 
-    // Iterate over each day
-    // vis.filteredData.forEach(d => {
-    //   d3.range(0, 6).forEach(i => {
-    //     if (d[years[i]) {
-    //       companiesWithBenefits[i] += d.ages[i];
-    //     }
-    //   })
-    // });
+    console.log("vis.displaydata linegraph", vis.displayData)
 
     vis.updateVis();
   }
 
   updateVis() {
     let vis = this;
-    console.log(vis.data);
+    console.log(vis.data)
+
+    // Update the scales and draw axes of the graph
+    vis.x.domain(d3.extent(vis.displayData, d => d.year));
+    vis.svg.select(".x-axis")
+        .call(vis.xAxis);
+    vis.y.domain([0, d3.max(vis.displayData, d => d.proportion)]);
+    vis.svg.select(".y-axis")
+        .call(vis.yAxis);
+
+    // Define the line for graph
+    vis.linePath
+        .datum(vis.displayData)
+        .transition()
+        .duration(800)
+        .attr("d", vis.line);
+
+    // Update points on the line graph
+    let points = vis.svg.selectAll(".point")
+        .data(vis.displayData);
+    points.enter().append("circle")
+        .attr("class", "point")
+        .attr("fill", "green")
+        // .on("click", (event, d) => showEdition(d))
+        // .on("mouseover", (event, d) => updateTooltip(event, d))
+        // .on("mouseout", hideTooltip)
+        .merge(points)
+        .transition()
+        .duration(800)
+        .attr("cx", d => vis.x(d.year))
+        .attr("cy", d => vis.y(d.proportion))
+        .attr("r", 4);
+
+    points.exit().remove();
   }
 }
