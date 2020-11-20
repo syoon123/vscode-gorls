@@ -44,13 +44,13 @@ class LineGraphVis {
 
     // Axis titles
     vis.svg.append("text")
-        .attr("x", -50)
+        .attr("x", -10)
         .attr("y", -8)
-        .text("Time (Years)");
-    vis.svg.append("text")
-        .attr("x", vis.width - 5)
-        .attr("y", vis.height + 25)
         .text("% of Companies With Benefits");
+    vis.svg.append("text")
+        .attr("x", vis.width / 2)
+        .attr("y", vis.height + 20)
+        .text("Year");
 
     // Append a single path to the drawing area
     vis.linePath = vis.svg.append("path")
