@@ -1,4 +1,38 @@
 const questions = {
+  '2014': {
+    'My company takes mental and physical health equally seriously.': {
+      'question': "Do you feel that your employer takes mental health as seriously as physical health?",
+      'positive_responses': ['Yes']
+    },
+    'My employer has formally discussed mental health. ': {
+      'question': "Has your employer ever discussed mental health as part of an employee wellness program?",
+      'positive_responses': ['Yes']
+    },
+    'My employer provides mental health benefits.': {
+      'question': "Does your employer provide mental health benefits?",
+      'positive_responses': ['Yes']
+    },
+    'My anonymity is protected should I take advantage of employer-provided resources.': {
+      'question': "Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources?",
+      'positive_responses': ['No']
+    },
+    'I have not observed negative consequences for being open about mental health issues in the workplace.': {
+      'question': "Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?",
+      'positive_responses': ['No']
+    },
+    'It is easy to request medical leave for mental health issues.': {
+      'question': "How easy is it for you to take medical leave for a mental health condition?",
+      'positive_responses': ['Very easy']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my coworkers.': {
+      'question': "Would you be willing to discuss a mental health issue with your coworkers?",
+      'positive_responses': ['Yes']
+    },
+    'I\'d feel comfortable discussing a mental health issue with my direct superior.': {
+      'question': "Would you be willing to discuss a mental health issue with your direct supervisor(s)?",
+      'positive_responses': ['Yes']
+    }
+  },
   '2016': {
     'My company takes mental and physical health equally seriously.': {
       'question': "Do you feel that your employer takes mental health as seriously as physical health?",
@@ -208,7 +242,7 @@ class GapsVis {
       'tnco': 0// trans, gender non-conforming, other
     }
     vis.counts = {}
-    const qs = selectedYear === '2016' ? questions[selectedYear] : questions['other'];
+    const qs = selectedYear === '2014' || selectedYear === '2016' ? questions[selectedYear] : questions['other'];
     question_order.forEach(q => {
       vis.counts[q] = {
         'positive_responses': qs[q].positive_responses,
@@ -242,7 +276,7 @@ class GapsVis {
             }
           })
         } else {
-          if (selectedYear === '2016') {
+          if (selectedYear === '2014' || selectedYear === '2016') {
             q = questions[selectedYear][question].question;
           } else {
             q = questions['other'][question].question;
@@ -290,7 +324,7 @@ class GapsVis {
 
   updateVis() {
     let vis = this;
-
+    
     // Update domains
     vis.x0.domain(Object.keys(vis.counts));
 

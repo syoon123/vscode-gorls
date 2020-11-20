@@ -51,6 +51,8 @@ def clean(year):
 #         print("Total no. of rows: %d"%(csvreader.line_num))
 
     for i in range(len(fields)):
+        if fields[i] == 'Gender':
+            fields[i] = 'What is your gender?'
         fields[i] = fields[i].replace('<strong>', '')
         fields[i] = fields[i].replace('</strong>', '')
         fields[i] = fields[i].replace('<em>', '')

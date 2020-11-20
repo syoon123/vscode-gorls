@@ -1,4 +1,4 @@
-const years = ['2016', '2017', '2018', '2019'];
+const years = ['2014', '2016', '2017', '2018', '2019'];
 let promises = [];
 years.forEach((year) => {
   promises.push(d3.csv(`data/cleaned_mhs_${year}.csv`));
