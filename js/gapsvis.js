@@ -81,6 +81,7 @@ const question_order = [
 ]
 
 class GapsVis {
+
   aggregate(gapsData) {
     Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
     function flatten(a) { return [].concat.apply([], a); }
@@ -98,7 +99,7 @@ class GapsVis {
   initVis() {
     let vis = this;
 
-    vis.margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    vis.margin = { top: 80, right: 20, bottom: 10, left: 20 };
 
     vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
     vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -115,11 +116,11 @@ class GapsVis {
       .range([0, vis.height])
       .padding(0.3);
 
-    vis.genders = ["Men", "Women", "Trans/Gender non-conforming/Other"];
+    vis.genders = ["men", "women", "trans, gender non-conforming, other"];
 
     vis.color = d3.scaleOrdinal()
       .domain(vis.genders)
-      .range(['#e41a1c','#377eb8','#4daf4a'])  // TODO: Pick better colors
+      .range(['#FFCB5E','#B4A3E4','#63B8C0'])
 
     vis.y = d3.scaleLinear()
       .range([vis.width/2, vis.width]);
@@ -129,7 +130,8 @@ class GapsVis {
       .tickFormat((q, index) => question_order[index]);
 
     vis.yAxis = d3.axisTop()
-      .scale(vis.y);
+      .scale(vis.y)
+      .tickFormat(q => q + '%');
 
     // Append axes
     vis.svg.append("g")
@@ -139,7 +141,45 @@ class GapsVis {
     vis.svg.append("g")
       .attr("class", "y-axis axis");
 
-    // TODO: Add axis titles, legend
+    // Add y-axis label
+    vis.svg.append("text")
+      .attr("class", "axisLabel")
+      .text('Gaps (Observed - Expected)')
+      .attr("transform", function() {
+        return "translate(" + (vis.width - this.getComputedTextLength() + 10) + " ," +
+          -30 + ")"
+      })
+      .style("text-anchor", "right");
+
+    // Create legend
+    vis.l = vis.svg.append("g")
+      .attr("class", "g-legend")
+      .attr("transform", "translate("+ (0) + "," + (40) + ")");
+    const size = 15;
+    vis.l.selectAll("legendBoxes")
+      .data(vis.genders)
+      .enter()
+      .append("rect")
+      .attr("x", function(d,i) { return i * (size + 70) + vis.width * 0.59 })
+      .attr("y", -120)
+      .attr("width", size)
+      .attr("height", size)
+      .style("fill", function(d) { return vis.color(d) });
+    vis.l.selectAll("legendLabels")
+      .data(vis.genders)
+      .enter()
+      .append("text")
+      .attr("x", function(d,i) { return size + 5 + i * (size + 70)  + vis.width * 0.59 })
+      .attr("y", -120 + size / 2)
+      .style("fill", function(d){ return vis.color(d)})
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .attr('font-size', 'small')
+      .style("alignment-baseline", "middle")
+
+    //add tooltip
+    vis.tooltip = d3.select("body").append('div')
+      .attr('class', "tooltip");
 
     // (Filter, aggregate, modify data)
     vis.wrangleData();
@@ -165,7 +205,7 @@ class GapsVis {
       'total': 0,
       'm': 0,
       'f': 0,
-      'tnco': 0// Trans/Gender non-conforming/Other
+      'tnco': 0// trans, gender non-conforming, other
     }
     vis.counts = {}
     const qs = selectedYear === '2016' ? questions[selectedYear] : questions['other'];
@@ -227,9 +267,21 @@ class GapsVis {
     Object.keys(vis.counts).forEach(q => {
       vis.displayData.push({
         'question': q,
-        'Men': calculate_gap(q, 'm'),
-        'Women': calculate_gap(q, 'f'),
-        'Trans/Gender non-conforming/Other': calculate_gap(q, 'tnco')
+        'men': {
+          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['m'] / vis.counts[q].total : 0,
+          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['m'] / vis.gender_counts.total : 0,
+          'gap': calculate_gap(q, 'm'),
+        },
+        'women': {
+          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['f'] / vis.counts[q].total : 0,
+          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['f'] / vis.gender_counts.total : 0,
+          'gap': calculate_gap(q, 'f'),
+        },
+        'trans, gender non-conforming, other': {
+          'positive_proportion': vis.counts[q].total !== 0 ? 100 * vis.counts[q]['tnco'] / vis.counts[q].total : 0,
+          'total_proportion': vis.gender_counts.total !== 0 ? 100 * vis.gender_counts['tnco'] / vis.gender_counts.total : 0,
+          'gap': calculate_gap(q, 'tnco'),
+        }
       })
     })
 
@@ -246,7 +298,7 @@ class GapsVis {
     let percentages = [];
     vis.displayData.forEach(d => {
       vis.genders.forEach(g => {
-        percentages.push(d[g])
+        percentages.push(d[g].gap)
       })
     });
     const maxMagnitude = Math.max(...d3.extent(percentages).map(value => Math.abs(value)));
@@ -260,13 +312,13 @@ class GapsVis {
     // Call axis functions with new domains
     vis.svg.select(".x-axis").call(vis.xAxis)
       .selectAll('text')
+      .attr('class', 'tickLabel')
       .attr('transform', function() {
-        // return `translate(${vis.width * -0.55  + this.getComputedTextLength()}, 0)`
         return `translate(${-vis.width * 0.25}, 0)`
       });
-    vis.svg.select(".y-axis").transition().call(vis.yAxis);
 
-    console.log(vis.displayData);
+    vis.svg.select(".y-axis").attr('class', 'tickLabel').transition().call(vis.yAxis);
+
     let barGroup = vis.svg.selectAll(".barGroup").data(vis.displayData);
     barGroup.enter().append("g").attr('class', 'barGroup')
       .merge(barGroup)
@@ -281,27 +333,38 @@ class GapsVis {
       .attr("y", function(d) { return vis.x1(d.key); })
       .attr("height", vis.x1.bandwidth())
       .attr("fill", function(d) { return vis.color(d.key); })
-      .on('mouseover', )
+      .on('mouseover', function(event, d) {
+        vis.tooltip
+          .style("opacity", 1)
+          .style("left", d.value.gap < 0 ? event.pageX + 20 + "px" : event.pageX - 240 + 'px')
+          .style("top", event.pageY - 60 + "px")
+          .html('<div>' +
+            `<p><b>${d.value.positive_proportion.toFixed(2) + '%'}</b> of respondents who agreed with this statement ` +
+            `identified as <b>${d.key}</b>, compared to the <b>${d.value.total_proportion.toFixed(2) + '%'}</b> of all ` +
+            `respondents who identified as such, yielding a gap of <b>${d.value.gap.toFixed(2) + '%'}</b>.` +
+            '</p></div>');
+      })
+      .on('mouseout', function() {
+        vis.tooltip
+          .style('opacity', 0)
+          .html('');
+      })
+      .attr('width', 0)
       .each(function(d) {
-        if (d.value < 0) {
+        if (d.value.gap < 0) {
           d3.select(this)
             .attr('x', vis.width * 0.75)
-            .attr('width', 0)
             .transition()
-            .attr('width', vis.width * 0.75 - vis.y(d.value))
-            .attr('x', vis.y(d.value));
+            .attr('width', vis.width * 0.75 - vis.y(d.value.gap))
+            .attr('x', vis.y(d.value.gap));
         } else {
           d3.select(this)
-            .attr('x', vis.width * 0.75)
-            .attr('width', 0)
+            .attr('x', vis.width * 0.75 + 1)
             .transition()
-            .attr('width', vis.y(d.value) - vis.width * 0.75);
+            .attr('width', vis.y(d.value.gap) - vis.width * 0.75);
         }
       });
 
     bars.exit().remove();
-
-    // TODO: Add tooltip
-
   }
 }
