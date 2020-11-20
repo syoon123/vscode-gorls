@@ -28,11 +28,11 @@
 					Skip to a topic/visualization...
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="nav-link" href="#visualization1">Apparent Efficacy of Benefits</a>
-					<a class="nav-link" href="#visualization2">Stigma and Company Culture</a>
-					<a class="nav-link" href="#visualization3">Gender Representation</a>
-					<a class="nav-link" href="#visualization4">Gendered Mental Heath Insights (1)</a>
-					<a class="nav-link" href="#visualization5">Gendered Mental Heath Insights (2)</a>
+					<a class="nav-link" href="#visualization1">where we are now</a>
+					<a class="nav-link" href="#visualization2">mental health + company culture</a>
+					<a class="nav-link" href="#visualization3">industry gender distribution</a>
+					<a class="nav-link" href="#visualization4">identity + mental health</a>
+					<a class="nav-link" href="#visualization5">gender gaps</a>
 				</div>
 		</ul>
 		<a class="nav-link" href="#team">About Us</a>
@@ -60,10 +60,10 @@
 <div class="visualization" id="visualization1">
 	<div class="container">
 		<div class="row">
-			<h3>Where Are We Now?</h3>
+			<h3>Where are we now?</h3>
 		</div>
 		<div class="row">
-			<h5>A Look into Mental Health Trends at Tech Companies</h5>
+			<h5>A look into mental health trends at tech companies</h5>
 		</div>
 		<div class="row">
 			<div class="col-4">
@@ -161,44 +161,39 @@
 <div class="visualization" id="visualization5">
 	<div class="container">
 		<div class="row">
-			<h3>How much does gender impact perceptions about mental health?</h3>
+			<h3>How much does gender impact perceptions of mental health?</h3>
 		</div>
 		<div class="row">
 			<h5>The confounding role that gender plays in industry stigma</h5>
 		</div>
 		<div class="row">
-			<p class="story-text">
-				We measured the difference between the representation of different gender identities and their responses
-				to the culture and policies around mental health in the industry in order to fully focus on how mental
-				health is affected for each gender demographic. In other words, is the distribution of gender within the
-				industry consistent with the distribution of gender among positive perceptions of how the workplace
-				handles mental health?
-			</p>
-			<p class="story-text">
-				In order to analyze these distributions, we subtracted the proportion of each gender identity among the
-				respondents who indicated a positive perception of mental health policy/company culture from the proportion
-				of that gender out of the total respondents. The resulting proportion depicts the difference in gender
-				representation for a given statement where 0 indicates no difference in perception based on gender. In
-				this visualization, a positive perception is interpreted as a positive value (+) whereas a response
-				implying a stigmatized or inadequate perception of mental health response is encoded as a negative value (-).
-			</p>
-			<p class="story-text">
-				So what does the data tell us? When considering the representation of men in the industry, males
-				disproportionately believe there are inadequacies in policies and benefits offered by their companies but
-				would feel comfortable utilizing them in comparison to women and gender-nonconforming groups. However,
-				women and gender-nonconforming groups disproportionately perceive a cultural stigma against mental health
-				in the workplace compared to men and do not utilize the available benefits despite their awareness of them.
-			</p>
+			<div class="story-text">
+				<p>
+					We measured the difference between the representation of different gender identities and their responses
+					to the culture and policies around mental health in the industry in order to fully focus on how mental
+					health is affected for each gender demographic. In other words, is the distribution of gender within the
+					industry consistent with the distribution of gender among positive perceptions of how the workplace
+					handles mental health?
+				</p>
+				<p>
+					In order to analyze these distributions, we subtracted the proportion of each gender identity among the
+					respondents who indicated a positive perception of mental health policy/company culture from the proportion
+					of that gender out of the total respondents. The resulting proportion depicts the difference in gender
+					representation for a given statement where 0 indicates no difference in perception based on gender. In
+					this visualization, a positive perception is interpreted as a positive value (+) whereas a response
+					implying a stigmatized or inadequate perception of mental health response is encoded as a negative value (-).
+				</p>
+			</div>
 		</div>
-		<div class="row">
-			<select id='gapsYearSelector' class="custom-select align-self-center" style="width: 20%; margin-right: 2vw" onchange="gapsVis.wrangleData()">
+		<div class="row" style="margin-top: 4vh;">
+			<select id='gapsYearSelector' class="custom-select align-self-center" style="width: 23%; margin-right: 2%" onchange="gapsVis.wrangleData()">
 				<option value="" selected>All years</option>
 				<option value="2016">2016</option>
 				<option value="2017">2017</option>
 				<option value="2018">2018</option>
 				<option value="2019">2019</option>
 			</select>
-			<select id='gapsCompanySizeSelector' class="custom-select align-self-center" style="width: 20%" onchange="gapsVis.wrangleData()">
+			<select id='gapsCompanySizeSelector' class="custom-select align-self-center" style="width: 23%" onchange="gapsVis.wrangleData()">
 				<option value="" selected>All company sizes</option>
 				<option value="1-5">1-5 employees</option>
 				<option value="6-25">6-25 employees</option>
@@ -210,6 +205,15 @@
 		</div>
 		<div class="row">
 			<div id="gaps"></div>
+		</div>
+		<div class="row">
+			<p class="story-text">
+				So what does the data tell us? When considering the representation of men in the industry, males
+				disproportionately believe there are inadequacies in policies and benefits offered by their companies but
+				would feel comfortable utilizing them in comparison to women and gender-nonconforming groups. However,
+				women and gender-nonconforming groups disproportionately perceive a cultural stigma against mental health
+				in the workplace compared to men and do not utilize the available benefits despite their awareness of them.
+			</p>
 		</div>
 	</div>
 </div>

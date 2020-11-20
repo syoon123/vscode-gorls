@@ -16,7 +16,7 @@
 }
 
 .story-text {
-  margin-top: 5vh;
+  margin-top: 4vh;
 }
 
 .visualization {
@@ -30,15 +30,41 @@
 
 #gaps {
   width: 100%;
-  height: 90vh;
+  height: 87vh;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+  width: 220px;
+  height: fit-content;
+  background: whitesmoke;
+  font: 12px sans-serif;
+  border-radius: 8px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: xx-small;
+}
+
+.tooltip b {
+  background-color: yellow;
 }
 
 body {
   padding-top: 7vh;
   margin-bottom: 8vh;
+}
+
+body, .axisLabel, .tickLabel {
   font-family: 'Roboto Mono', monospace;
 }
 
 .axisLabel {
   font-size: 12px;
+}
+
+.tickLabel {
+  font-size: xx-small;
 }
