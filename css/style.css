@@ -69,6 +69,12 @@
   font-size: small;
 }
 
+.benefits-line {
+  fill: none;
+  stroke: #63B8C0;
+  stroke-width: 2;
+}
+
 b {
   background-color: yellow;
 }
