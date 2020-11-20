@@ -18,7 +18,7 @@ class DotsVis {
   initVis() {
     let vis = this;
 
-    vis.margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    vis.margin = { top: 60, right: 20, bottom: 20, left: 20 };
 
     vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
     vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -30,11 +30,40 @@ class DotsVis {
       .append("g")
       .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+    /* TODO: Color question, what to do with answers that are either unclear (may be typos or intentional) or implicitly
+    *   meant to be disrespectful?
+    *   (Note: "blank" is counted under "trans, gender non-conforming, other" as these folks have the most reason to leave
+    *    the question unanswered — is this something we should change or..?) */
     vis.genders = ["men", "women", "trans, gender non-conforming, other"];
-
     vis.color = d3.scaleOrdinal()
       .domain(vis.genders)
       .range(['#FFCB5E','#B4A3E4','#63B8C0'])
+
+    // Create legend
+    vis.l = vis.svg.append("g")
+      .attr("class", "g-legend")
+      .attr("transform", "translate("+ (0) + "," + (40) + ")");
+    const size = 15;
+    vis.l.selectAll("legendBoxes")
+      .data(vis.genders)
+      .enter()
+      .append("rect")
+      .attr("x", function(d,i) { return i * (size + 70) - 20 })
+      .attr("y", -70)
+      .attr("width", size)
+      .attr("height", size)
+      .style("fill", function(d) { return vis.color(d) });
+    vis.l.selectAll("legendLabels")
+      .data(vis.genders)
+      .enter()
+      .append("text")
+      .attr("x", function(d,i) { return size + 5 + i * (size + 70) - 20})
+      .attr("y", -70 + size / 2)
+      .style("fill", function(d){ return vis.color(d)})
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .attr('font-size', 'small')
+      .style("alignment-baseline", "middle")
 
     //add tooltip
     vis.tooltip = d3.select("body").append('div')
@@ -45,6 +74,19 @@ class DotsVis {
 
   wrangleData() {
     let vis = this;
+
+    let selectedYear = $('#dotsYearSelector').val();
+    let selectedCompanySize = $('#dotsCompanySizeSelector').val();
+
+    vis.filteredData = vis.aggregate(vis.data);
+    if (selectedYear) {
+      vis.filteredData = vis.data[selectedYear];
+    }
+    if (selectedCompanySize) {
+      vis.filteredData = vis.filteredData.filter(
+        d => d['How many employees does your company or organization have?'] === selectedCompanySize
+      )
+    }
 
     let points = vis.filteredData.map(d => {
       return {
@@ -71,7 +113,6 @@ class DotsVis {
 
       return points;
     }
-    console.log(points.length);
 
     vis.displayData = phyllotaxisLayout(points, 10.5, vis.width/2, vis.height/2);
 
@@ -99,7 +140,6 @@ class DotsVis {
         .attr('r', d => d.radius)
         .attr('fill', function(d) {
           let gender;
-          console.log(d.gender);
           if (d.gender === "male") {
             gender = 'men';
           } else if (d.gender === "female") {
