@@ -172,19 +172,28 @@
 			<h5>Culture around mental health, broken down by gender and company size</h5>
 		</div>
 		<div class="row">
-			<div class="col-4">
-				<p class="story-text">
-					This stacked bar chart visualizes the survey responses to various questions pertaining to employees' perceptions
-					about mental health in the workplace, partitioning each bar by the gender of the respondents. From this data,
-					we can see an overwhelmingly high representation of male respondents in comparison to other gender demographics.
-					What sort of influence does this have on the distribution of data? We will next explore how much gender
-					can impact your experience discussing mental health in the workplace.
-					<br><br>
-					Click on each bar for a closer look at the gender breakdowns for each response and company size.
-				</p>
-			</div>
+			<p class="story-text">
+				This stacked bar chart visualizes the survey responses to various questions pertaining to employees' perceptions
+				about mental health in the workplace, partitioning each bar by the gender of the respondents. From this data,
+				we can see an overwhelmingly high representation of male respondents in comparison to other gender demographics.
+				What sort of influence does this have on the distribution of data? We will next explore how much gender
+				can impact your experience discussing mental health in the workplace.
+				<br><br>
+				Click on each bar for a closer look at the gender breakdowns for each response and company size.
+			</p>
+		</div>
+		<div class="row">
+			<select id='stackedBarChartSelector' class="custom-select align-self-center" style="width: 100%; margin-right: 2vw" onchange="stackedBarChartVis.wrangleData()">
+				<option value="Q1" selected>Would you feel comfortable discussing a mental health disorder with your coworkers?</option>
+				<option value="Q2">Do you think that discussing a mental health disorder with your employer would have negative consequences?</option>
+			</select>
+		</div>
+		<div class="row">
 			<div class="col-8">
 				<div id="stackedBarChart"></div>
+			</div>
+			<div class="col-4">
+				<div id="pieChart"></div>
 			</div>
 		</div>
 	</div>
@@ -283,12 +292,18 @@
 
 <!-- d3 -->
 <script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/d3-array@1"></script>
+<script src="https://unpkg.com/d3-collection@1"></script>
+<script src="https://unpkg.com/d3-path@1"></script>
+<script src="https://unpkg.com/d3-shape@1"></script>
+<script src="https://unpkg.com/d3-sankey@0"></script>
 
 <!-- own js files -->
 <script src="js/linegraphvis.js"></script>
 <script src="js/sankeyvis.js"></script>
 <script src="js/dotsvis.js"></script>
 <script src="js/stackedbarchartvis.js"></script>
+<script src="js/pievis.js"></script>
 <script src="js/gapsvis.js"></script>
 <script src="js/main.js"></script>
 </body>

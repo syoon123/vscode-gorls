@@ -35,7 +35,17 @@
 }
 
 #stackedBarChart {
-  width: 55vw;
+  width: 100%;
+  height: 60vh;
+}
+
+#pieChart {
+  width: 100%;
+  height: 60vh;
+}
+
+#sankey {
+  width: 100%;
   height: 60vh;
 }
 

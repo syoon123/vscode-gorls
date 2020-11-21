@@ -8,7 +8,7 @@ Promise.all(promises)
   .then(function (data) { gettingStarted(data) })
   .catch(function(error) { console.log(error) });
 
-let lineGraphVis, sankeyVis, dotsVis, stackedBarChartVis, gapsVis;
+let lineGraphVis, sankeyVis, dotsVis, stackedBarChartVis, gapsVis, expectedPieVis, observedPieVis;
 
 function gettingStarted(allData) {
   let data = {}
@@ -19,5 +19,7 @@ function gettingStarted(allData) {
   sankeyVis = new SankeyVis('sankey', data);
   dotsVis = new DotsVis('dots', data);
   stackedBarChartVis = new StackedBarChartVis('stackedBarChart', data);
+  observedPieVis = new PieVis('pieChart', null, 'Observed');
+  expectedPieVis = new PieVis('pieChart', null, 'Expected');
   gapsVis = new GapsVis('gaps', data);
 }
