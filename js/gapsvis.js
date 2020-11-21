@@ -373,18 +373,21 @@ class GapsVis {
           .style('opacity', 0)
           .html('');
       })
-      .attr('width', 0)
       .each(function(d) {
         if (d.value.gap < 0) {
           d3.select(this)
             .attr('x', vis.width * 0.75)
+            .attr('width', 0)
             .transition()
+            .duration(300)
             .attr('width', vis.width * 0.75 - vis.y(d.value.gap))
             .attr('x', vis.y(d.value.gap));
         } else {
           d3.select(this)
             .attr('x', vis.width * 0.75 + 1)
+            .attr('width', 0)
             .transition()
+            .duration(300)
             .attr('width', vis.y(d.value.gap) - vis.width * 0.75);
         }
       });
