@@ -27,16 +27,6 @@ class StackedBarChartVis {
         .append("g")
         .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
-    // add title
-    vis.svg.append('g')
-        .attr('class', 'title stacked-bar-chart-title')
-        .append('text')
-        .text(vis.selectedCategoryLabel)
-        .attr('transform', `translate(${vis.width / 2}, 20)`)
-        .attr("font-weight", "bold")
-        .style("font-size", "12px")
-        .attr('text-anchor', 'middle');
-
     vis.x0 = d3.scaleBand()
         .rangeRound([0, vis.width])
         .paddingInner(0.1);
@@ -50,12 +40,12 @@ class StackedBarChartVis {
 
     vis.y1 = d3.scaleBand()
 
-    vis.z = d3.scaleOrdinal()
-        .domain(["male", "female", "other"])
-        .range(["#98abc5", "#8a89a6", "#7b6888"]);
-
-    let colors = ["#98abc5", "#8a89a6", "#7b6888"];
+    let colors = ['#FFCB5E','#B4A3E4','#63B8C0'];
     let genders = ["male", "female", "other"];
+
+    vis.z = d3.scaleOrdinal()
+        .domain(genders)
+        .range(colors);
 
     // Create group for chart
     vis.g = vis.svg.append('g')
@@ -84,7 +74,13 @@ class StackedBarChartVis {
         .style("fill", function(d){ return vis.z(d)})
         .text(function(d){ return d})
         .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle")
+        .style("alignment-baseline", "middle");
+
+    // Tooltip
+    vis.tooltip = d3.select('body')
+        .append('div')
+        .attr('class', "tooltip")
+        .attr('id', 'stackedBarTooltip');
 
     vis.wrangleData();
   }
@@ -92,9 +88,21 @@ class StackedBarChartVis {
   wrangleData() {
     let vis = this;
 
+    var selector = document.getElementById('stackedBarChartSelector');
+    switch(selector.options[selector.selectedIndex].value) {
+      case "Q1":
+        vis.selectedCategoryLabel = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
+        break;
+      case "Q2":
+        vis.selectedCategoryLabel = "Do you think that discussing a mental health disorder with your employer would have negative consequences?";
+        break;
+      case "Q3":
+        vis.selectedCategoryLabel = "Do you think that discussing a mental health disorder with your employer would have negative consequences?";
+        break;
+    }
+
     vis.displayData = []
 
-    // vis.companySizeValues = Array.from(d3.group(vis.data, d =>d[companySizeLabel]), ([key, value]) => (key)).filter(e => e !== "");
     vis.selectedCategoryValues = Array.from(d3.group(vis.data[2016], d =>d[vis.selectedCategoryLabel]), ([key, value]) => (key)).filter(e => e !== "");
     // manually set company size value for order
     vis.companySizeValues = ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"];
@@ -124,12 +132,9 @@ class StackedBarChartVis {
       }
     });
 
-    vis.yMax = 0;
-
     groupedData.forEach(function(companySizeList) {
-      companySizeList.selectedCategory.forEach(function(selectedCategoryList) {
+      companySizeList.selectedCategory.forEach(function(selectedCategoryList, i) {
         var temp = {male: 0, female: 0, other: 0};
-        // var total = 0;
         selectedCategoryList[1].forEach(function(d) {
           if (d[vis.genderLabel] == "male")
             temp["male"]++;
@@ -137,22 +142,48 @@ class StackedBarChartVis {
             temp["female"]++;
           else
             temp["other"]++;
-          // total++;
         })
         vis.displayData.forEach(function(obj) {
           if (obj.companySize == companySizeList.companySize && obj.selectedCategory == selectedCategoryList[0]) {
             obj.male = temp["male"];
             obj.female = temp["female"];
             obj.other = temp["other"];
-            // obj.male = (temp["male"] / total) * 100;
-            // obj.female = (temp["female"] / total) * 100;
-            // obj.other = (temp["other"] / total) * 100;
+            // obj.male = (temp["male"] / tempTotal) * 100;
+            // obj.female = (temp["female"] / tempTotal) * 100;
+            // obj.other = (temp["other"] / tempTotal) * 100;
           }
         })
       })
     })
 
     console.log(vis.displayData);
+    var responsesPerCompanySize = {
+      "1-5": 0,
+      "6-25": 0,
+      "26-100": 0,
+      "100-500": 0,
+      "500-1000": 0,
+      "More than 1000": 0
+    };
+    vis.displayData.forEach(function(d) {
+      responsesPerCompanySize[d.companySize] += d.male + d.female + d.other;
+    })
+
+    vis.displayData.forEach(function(d) {
+      d.male = (d.male / responsesPerCompanySize[d.companySize]) * 100;
+      d.female = (d.female / responsesPerCompanySize[d.companySize]) * 100;
+      d.other = (d.other / responsesPerCompanySize[d.companySize]) * 100;
+    })
+
+    vis.standardGenderDistribution = [0, 0, 0];
+    vis.data[2016].forEach(function(d) {
+      if (d[vis.genderLabel] == "male")
+        vis.standardGenderDistribution[0]++;
+      else if (d[vis.genderLabel] == "female")
+        vis.standardGenderDistribution[1]++;
+      else
+        vis.standardGenderDistribution[2]++;
+    })
 
     vis.updateVis();
   }
@@ -165,22 +196,33 @@ class StackedBarChartVis {
         .rangeRound([0, vis.x0.bandwidth()])
         .padding(0.2);
 
+    vis.y.domain([0, 70]);
+
     vis.keys = vis.z.domain()
-
-    vis.y.domain([0, 180]);
-
     var stackData = d3.stack()
         .keys(vis.keys)(vis.displayData)
 
-    var serie = vis.g.selectAll(".serie")
-        .data(stackData)
-        .enter().append("g")
+    console.log(stackData);
+
+    vis.serie = vis.g.selectAll(".serie")
+        .data(stackData);
+    vis.serie = vis.serie.enter()
+        .append("g")
+        .merge(vis.serie)
         .attr("class", "serie")
         .attr("fill", function(d) { return vis.z(d.key); });
+    vis.serie.exit()
+        .transition()
+        .duration(500)
+        .remove();
 
-    serie.selectAll("rect")
-        .data(function(d) { return d; })
-        .enter().append("rect")
+    vis.bars = vis.serie.selectAll("rect")
+        .data(function(d) {
+          return d; });
+    vis.bars = vis.bars
+        .enter()
+        .append("rect")
+        .merge(vis.bars)
         .attr("class", "serie-rect")
         .attr("transform", function(d) {
           return "translate(" + vis.x0(d.data.companySize) + ",0)"; })
@@ -188,11 +230,28 @@ class StackedBarChartVis {
         .attr("y", function(d) { return vis.y(d[1]); })
         .attr("height", function(d) { return vis.y(d[0]) - vis.y(d[1]); })
         .attr("width", vis.x1.bandwidth())
-        .on("click", function(d, i){ console.log("serie-rect click d", i, d); });
+        .on('mouseover', function(event, d){
+          let barData = [d.data["male"], d.data["female"], d.data["other"]]
+          expectedPieVis.wrangleData(vis.standardGenderDistribution);
+          observedPieVis.wrangleData(barData);
+        })
+        .on('mouseout', function(){
+          expectedPieVis.removeVis();
+          observedPieVis.removeVis();
+        });
+    vis.bars.exit()
+        .transition()
+        .duration(500)
+        .remove();
 
-    serie.selectAll("text")
-        .data(stackData[2])
-        .enter().append("text")
+    // Add labels for each bar
+    vis.labels = vis.serie.selectAll("text")
+        .data(stackData[2]);
+    vis.labels = vis.labels
+        .enter()
+        .append("text")
+        .merge(vis.labels);
+    vis.labels
         .attr("class", "serie-text")
         .attr("transform", function(d) {
           return "translate(" + vis.x0(d.data.companySize) + ",0)"; })
@@ -204,6 +263,10 @@ class StackedBarChartVis {
         .text(function(d) {
           return d.data.selectedCategory;
         });
+    vis.labels.exit()
+        .transition()
+        .duration(500)
+        .remove();
 
     // Add x-axis
     vis.g.append("g")
@@ -233,6 +296,19 @@ class StackedBarChartVis {
         .attr("x", 0 - (vis.height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("# of Survey Respondents");
+        .text("% of Survey Respondents");
+
+    // add title
+    if (vis.title != null) {
+      vis.title.remove();
+    }
+    vis.title = vis.svg.append('g')
+        .attr('class', 'title stacked-bar-chart-title')
+        .append('text')
+        .text(vis.selectedCategoryLabel)
+        .attr('transform', `translate(${vis.width / 2}, 20)`)
+        .attr("font-weight", "bold")
+        .style("font-size", "12px")
+        .attr('text-anchor', 'middle');
   }
 }
