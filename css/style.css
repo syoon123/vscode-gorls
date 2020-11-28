@@ -16,7 +16,12 @@ html {
 }
 
 #intro-paragraph {
-  font-size: large;
+  font-size: medium;
+  margin-top: 5vh;
+}
+
+.source-text {
+  font-size: small;
 }
 
 .story-text {
