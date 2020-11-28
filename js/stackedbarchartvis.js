@@ -148,9 +148,6 @@ class StackedBarChartVis {
             obj.male = temp["male"];
             obj.female = temp["female"];
             obj.other = temp["other"];
-            // obj.male = (temp["male"] / tempTotal) * 100;
-            // obj.female = (temp["female"] / tempTotal) * 100;
-            // obj.other = (temp["other"] / tempTotal) * 100;
           }
         })
       })
@@ -234,10 +231,22 @@ class StackedBarChartVis {
           let barData = [d.data["male"], d.data["female"], d.data["other"]]
           expectedPieVis.wrangleData(vis.standardGenderDistribution);
           observedPieVis.wrangleData(barData);
+          console.log(event, d);
+          vis.bars.attr('stroke', function (d2) {
+            if (d.data.companySize == d2.data.companySize && d.data.selectedCategory == d2.data.selectedCategory) {
+              return 'black';
+            }
+          });
+          vis.bars.attr('stroke-width', function (d2) {
+            if (d.data.companySize == d2.data.companySize && d.data.selectedCategory == d2.data.selectedCategory) {
+              return 2;
+            }
+          });
         })
         .on('mouseout', function(){
           expectedPieVis.removeVis();
           observedPieVis.removeVis();
+          vis.bars.attr('stroke-width', 0);
         });
     vis.bars.exit()
         .transition()
@@ -306,9 +315,44 @@ class StackedBarChartVis {
         .attr('class', 'title stacked-bar-chart-title')
         .append('text')
         .text(vis.selectedCategoryLabel)
-        .attr('transform', `translate(${vis.width / 2}, 20)`)
+        .attr("x", vis.width / 2)
+        .attr("y", 0)
         .attr("font-weight", "bold")
         .style("font-size", "12px")
-        .attr('text-anchor', 'middle');
+        .attr('text-anchor', 'middle')
+        .call(vis.wrap, vis.width);
+  }
+
+  wrap(text, width) {
+    text.each(function () {
+      var text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1, // ems
+          x = text.attr("x"),
+          y = text.attr("y"),
+          dy = 0, //parseFloat(text.attr("dy")),
+          tspan = text.text(null)
+              .append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", dy + "em");
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", ++lineNumber * lineHeight + dy + "em")
+              .text(word);
+        }
+      }
+    });
   }
 }

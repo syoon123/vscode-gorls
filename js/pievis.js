@@ -84,6 +84,16 @@ class PieVis {
 
         vis.g.append("path")
             .attr("d", arc)
+            // .attr("stroke", function (d) {
+            //     if (vis.titleText == "Observed") {
+            //         return 'black';
+            //     }
+            // })
+            // .style("stroke-width", function (d) {
+            //     if (vis.titleText == "Observed") {
+            //         return 2;
+            //     }
+            // })
             .style("fill", function(d,i) {
                 return vis.colors[i];
             });
