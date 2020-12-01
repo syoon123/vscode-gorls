@@ -88,8 +88,8 @@ class StackedBarChartVis {
   wrangleData() {
     let vis = this;
 
-    var selector = document.getElementById('stackedBarChartSelector');
-    switch(selector.options[selector.selectedIndex].value) {
+    var questionSelector = document.getElementById('stackedBarChartQuestionSelector');
+    switch(questionSelector.options[questionSelector.selectedIndex].value) {
       case "Q1":
         vis.selectedCategoryLabel = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
         break;
@@ -101,13 +101,16 @@ class StackedBarChartVis {
         break;
     }
 
-    vis.displayData = []
+    vis.yearData = vis.filterYear();
 
-    vis.selectedCategoryValues = Array.from(d3.group(vis.data[2016], d =>d[vis.selectedCategoryLabel]), ([key, value]) => (key)).filter(e => e !== "");
-    // manually set company size value for order
+    console.log(vis.selectedYearLabel);
+    console.log(vis.yearData.length);
+    console.log(vis.yearData);
+
+    vis.displayData = [];
+
+    vis.selectedCategoryValues = Array.from(d3.group(vis.yearData, d =>d[vis.selectedCategoryLabel]), ([key, value]) => (key)).filter(e => e !== "");
     vis.companySizeValues = ["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"];
-
-    // console.log(vis.companySizeValues);
 
     vis.companySizeValues.forEach(function(companySize) {
       vis.selectedCategoryValues.forEach(function(selectedCategory) {
@@ -173,7 +176,7 @@ class StackedBarChartVis {
     })
 
     vis.standardGenderDistribution = [0, 0, 0];
-    vis.data[2016].forEach(function(d) {
+    vis.yearData.forEach(function(d) {
       if (d[vis.genderLabel] == "male")
         vis.standardGenderDistribution[0]++;
       else if (d[vis.genderLabel] == "female")
@@ -231,7 +234,6 @@ class StackedBarChartVis {
           let barData = [d.data["male"], d.data["female"], d.data["other"]]
           expectedPieVis.wrangleData(vis.standardGenderDistribution);
           observedPieVis.wrangleData(barData);
-          console.log(event, d);
           vis.bars.attr('stroke', function (d2) {
             if (d.data.companySize == d2.data.companySize && d.data.selectedCategory == d2.data.selectedCategory) {
               return 'black';
@@ -354,5 +356,82 @@ class StackedBarChartVis {
         }
       }
     });
+  }
+
+  filterYear() {
+    let vis = this;
+
+    var yearSelector = document.getElementById('stackedBarChartYearSelector');
+    vis.selectedYearLabel = yearSelector.options[yearSelector.selectedIndex].value;
+
+    if (vis.selectedYearLabel == "2014") {
+      var yearData = [];
+      vis.data[2014].forEach(function (d) {
+        var resp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
+        if (resp == "Some of them") {
+          resp = "Maybe";
+        }
+        yearData.push({
+          'What is your gender?': d['What is your gender?'],
+          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+          'Would you feel comfortable discussing a mental health disorder with your coworkers?': resp,
+        })
+      });
+      yearData = yearData.slice(0, 10);
+      return yearData;
+    }
+    else if (vis.selectedYearLabel == "2016") {
+      var yearData = [];
+      vis.data[2016].forEach(function (d) {
+        yearData.push({
+          'What is your gender?': d['What is your gender?'],
+          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?']
+        })
+      });
+      return yearData;
+    }
+    else if (vis.selectedYearLabel == "2017" || vis.selectedYearLabel == "2018"  || vis.selectedYearLabel == "2019" ) {
+      var yearData = [];
+      vis.data[parseInt(vis.selectedYearLabel)].forEach(function (d) {
+        yearData.push({
+          'What is your gender?': d['What is your gender?'],
+          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
+        })
+      });
+      return yearData;
+    }
+    else {
+      var yearData = [];
+      vis.data[2016].forEach(function (d) {
+        yearData.push({
+          'What is your gender?': d['What is your gender?'],
+          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?']
+        })
+      });
+      [2017, 2018, 2019].forEach(function (year) {
+        vis.data[year].forEach(function (d) {
+          yearData.push({
+            'What is your gender?': d['What is your gender?'],
+            'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+            'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
+          })
+        })
+      });
+      vis.data[2014].forEach(function (d) {
+        var temp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
+        if (temp == "Some of them") {
+          temp = "Maybe";
+        }
+        yearData.push({
+          'What is your gender?': d['What is your gender?'],
+          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+          'Would you feel comfortable discussing a mental health disorder with your coworkers?': temp,
+        })
+      });
+      return yearData;
+    }
   }
 }
