@@ -198,9 +198,19 @@
 			</p>
 		</div>
 		<div class="row">
-			<select id='stackedBarChartSelector' class="custom-select align-self-center" style="width: 100%; margin-right: 2vw" onchange="stackedBarChartVis.wrangleData()">
+			<select id='stackedBarChartQuestionSelector' class="custom-select align-self-center" style="width: 100%; margin-right: 2vw" onchange="stackedBarChartVis.wrangleData()">
 				<option value="Q1" selected>Would you feel comfortable discussing a mental health disorder with your coworkers?</option>
 				<option value="Q2">Do you think that discussing a mental health disorder with your employer would have negative consequences?</option>
+			</select>
+		</div>
+		<div class="row">
+			<select id='stackedBarChartYearSelector' class="custom-select align-self-center" style="width: 23%; margin-right: 2%" onchange="stackedBarChartVis.wrangleData()">
+				<option value="All" selected>All years</option>
+				<option value="2014">2014</option>
+				<option value="2016">2016</option>
+				<option value="2017">2017</option>
+				<option value="2018">2018</option>
+				<option value="2019">2019</option>
 			</select>
 		</div>
 		<div class="row">

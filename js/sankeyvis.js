@@ -65,8 +65,6 @@ class SankeyVis {
       }
     });
 
-    console.log(vis.tempDisplayData);
-
     vis.displayData = vis.tempDisplayData;
     vis.keys = ["questionOne", "questionTwo", "questionThree"];
 
@@ -122,34 +120,59 @@ class SankeyVis {
 
   updateVis() {
     let vis = this;
-    // console.log(vis.data);
-    vis.color = d3.scaleOrdinal(["No", "Yes", "Maybe"], ['#FFCB5E','#B4A3E4','#63B8C0']).unknown("#ccc");
+
+    vis.color = d3.scaleOrdinal(["No", "Yes", "Maybe"], ['#B4A3E4','#63B8C0','#FFCB5E']).unknown("#ccc");
 
     vis.sankey = d3.sankey()
         .nodeSort(null)
         .linkSort(null)
         .nodeWidth(4)
         .nodePadding(20)
-        .extent([[0, 5], [vis.width, vis.height - 5]]);
+        .extent([[vis.margin.left, vis.margin.top], [vis.width - vis.margin.right, vis.height - vis.margin.bottom]]);
 
     const {nodes, links} = vis.sankey({
       nodes: vis.nodes.map(d => Object.assign({}, d)),
       links: vis.links.map(d => Object.assign({}, d))
     });
 
+    let questionOne = "Do you currently have a mental health disorder?";
+    let questionTwo = "Do you feel that being identified as a person with a mental health issue would hurt your career?";
+    let questionThree = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
 
-    vis.svg.append("g")
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(questionOne), vis.width / 3 - 10);
+
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", vis.width / 2)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "middle")
+        .text(questionTwo), vis.width / 3 - 10);
+
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", vis.width)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(questionThree), vis.width / 3 - 10);
+
+    vis.rects = vis.svg.append("g")
         .selectAll("rect")
         .data(nodes)
         .join("rect")
         .attr("x", d => d.x0)
         .attr("y", d => d.y0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("width", d => d.x1 - d.x0)
-        .append("title")
-        .text(d => `${d.name}\n${d.value.toLocaleString()}`);
+        .attr("width", d => d.x1 - d.x0);
 
-    vis.svg.append("g")
+    vis.paths = vis.svg.append("g")
         .attr("fill", "none")
         .selectAll("g")
         .data(links)
@@ -157,11 +180,32 @@ class SankeyVis {
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("stroke", d => vis.color(d.names[0]))
         .attr("stroke-width", d => d.width)
-        .style("mix-blend-mode", "multiply")
-        .append("title")
-        .text(d => `${d.names.join(" → ")}\n${d.value.toLocaleString()}`);
+        .style("mix-blend-mode", "multiply");
 
-    vis.svg.append("g")
+    vis.paths
+        .on("mouseover", function(d, e) {
+          vis.paths.attr('stroke', d => vis.color("gray"));
+          d3.select(this).attr('stroke', vis.color(e.names[0]));
+          vis.paths
+              .style('stroke', function (link_d) {
+                if (e.source == link_d.source && e.target == link_d.target && e.names == link_d.names) {
+                  return vis.color(link_d.names[0]);
+                }
+                else if (e.target == link_d.source && e.names[0] == link_d.names[0]) {
+                  return vis.color(link_d.names[0]);
+                }
+                else {
+                  return vis.color("gray");
+                }
+              });
+        })
+        .on("mouseout", function(d) {
+          vis.paths
+              .style('stroke', function (link_d) {
+                return vis.color(link_d.names[0]);});
+        });
+
+    vis.yLabels = vis.svg.append("g")
         .style("font", "10px sans-serif")
         .selectAll("text")
         .data(nodes)
@@ -174,6 +218,39 @@ class SankeyVis {
         .append("tspan")
         .attr("fill-opacity", 0.7)
         .text(d => ` ${d.value.toLocaleString()}`);
+  }
+
+  wrap(text, width) {
+    text.each(function () {
+      var text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1, // ems
+          x = text.attr("x"),
+          y = text.attr("y"),
+          dy = 0, //parseFloat(text.attr("dy")),
+          tspan = text.text(null)
+              .append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", dy + "em");
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", ++lineNumber * lineHeight + dy + "em")
+              .text(word);
+        }
+      }
+    });
   }
 }
 
