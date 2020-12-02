@@ -72,7 +72,16 @@ class StackedBarChartVis {
         .attr("x", function(d,i){ return size + 5 + i * (size + 100)})
         .attr("y", 0 + size / 2)
         .style("fill", function(d){ return vis.z(d)})
-        .text(function(d){ return d})
+        .text(function(d){
+          switch (d) {
+            case "male":
+              return "men";
+            case "female":
+              return "women";
+            case "other":
+              return "trans, gender non-conforming, other";
+          }
+          })
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle");
 
@@ -101,11 +110,13 @@ class StackedBarChartVis {
         break;
     }
 
-    vis.yearData = vis.filterYear();
+    // vis.yearData = vis.filterYear();
 
-    console.log(vis.selectedYearLabel);
-    console.log(vis.yearData.length);
-    console.log(vis.yearData);
+    // console.log(vis.selectedYearLabel);
+    // console.log(vis.yearData.length);
+    // console.log(vis.yearData);
+
+    vis.yearData = vis.data["2016"];
 
     vis.displayData = [];
 
@@ -358,80 +369,86 @@ class StackedBarChartVis {
     });
   }
 
-  filterYear() {
-    let vis = this;
-
-    var yearSelector = document.getElementById('stackedBarChartYearSelector');
-    vis.selectedYearLabel = yearSelector.options[yearSelector.selectedIndex].value;
-
-    if (vis.selectedYearLabel == "2014") {
-      var yearData = [];
-      vis.data[2014].forEach(function (d) {
-        var resp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
-        if (resp == "Some of them") {
-          resp = "Maybe";
-        }
-        yearData.push({
-          'What is your gender?': d['What is your gender?'],
-          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-          'Would you feel comfortable discussing a mental health disorder with your coworkers?': resp,
-        })
-      });
-      yearData = yearData.slice(0, 10);
-      return yearData;
-    }
-    else if (vis.selectedYearLabel == "2016") {
-      var yearData = [];
-      vis.data[2016].forEach(function (d) {
-        yearData.push({
-          'What is your gender?': d['What is your gender?'],
-          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?']
-        })
-      });
-      return yearData;
-    }
-    else if (vis.selectedYearLabel == "2017" || vis.selectedYearLabel == "2018"  || vis.selectedYearLabel == "2019" ) {
-      var yearData = [];
-      vis.data[parseInt(vis.selectedYearLabel)].forEach(function (d) {
-        yearData.push({
-          'What is your gender?': d['What is your gender?'],
-          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
-        })
-      });
-      return yearData;
-    }
-    else {
-      var yearData = [];
-      vis.data[2016].forEach(function (d) {
-        yearData.push({
-          'What is your gender?': d['What is your gender?'],
-          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-          'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?']
-        })
-      });
-      [2017, 2018, 2019].forEach(function (year) {
-        vis.data[year].forEach(function (d) {
-          yearData.push({
-            'What is your gender?': d['What is your gender?'],
-            'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-            'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
-          })
-        })
-      });
-      vis.data[2014].forEach(function (d) {
-        var temp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
-        if (temp == "Some of them") {
-          temp = "Maybe";
-        }
-        yearData.push({
-          'What is your gender?': d['What is your gender?'],
-          'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
-          'Would you feel comfortable discussing a mental health disorder with your coworkers?': temp,
-        })
-      });
-      return yearData;
-    }
-  }
+  // filterYear() {
+  //   let vis = this;
+  //
+  //   var yearSelector = document.getElementById('stackedBarChartYearSelector');
+  //   vis.selectedYearLabel = yearSelector.options[yearSelector.selectedIndex].value;
+  //
+  //   if (vis.selectedYearLabel == "2014") {
+  //     var yearData = [];
+  //     vis.data[2014].forEach(function (d) {
+  //       var resp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
+  //       if (resp == "Some of them") {
+  //         resp = "Maybe";
+  //       }
+  //       yearData.push({
+  //         'What is your gender?': d['What is your gender?'],
+  //         'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //         'Would you feel comfortable discussing a mental health disorder with your coworkers?': resp,
+  //         'Do you think that discussing a mental health disorder with your employer would have negative consequences?': d['Do you think that discussing a mental health disorder with your employer would have negative consequences?'],
+  //       })
+  //     });
+  //     yearData = yearData.slice(0, 10);
+  //     return yearData;
+  //   }
+  //   else if (vis.selectedYearLabel == "2016") {
+  //     var yearData = [];
+  //     vis.data[2016].forEach(function (d) {
+  //       yearData.push({
+  //         'What is your gender?': d['What is your gender?'],
+  //         'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //         'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?'],
+  //         'Do you think that discussing a mental health disorder with your employer would have negative consequences?': d['Do you think that discussing a mental health disorder with your employer would have negative consequences?'],
+  //       })
+  //     });
+  //     return yearData;
+  //   }
+  //   else if (vis.selectedYearLabel == "2017" || vis.selectedYearLabel == "2018"  || vis.selectedYearLabel == "2019" ) {
+  //     var yearData = [];
+  //     vis.data[parseInt(vis.selectedYearLabel)].forEach(function (d) {
+  //       yearData.push({
+  //         'What is your gender?': d['What is your gender?'],
+  //         'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //         'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
+  //         //
+  //       })
+  //     });
+  //     return yearData;
+  //   }
+  //   else {
+  //     var yearData = [];
+  //     vis.data[2016].forEach(function (d) {
+  //       yearData.push({
+  //         'What is your gender?': d['What is your gender?'],
+  //         'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //         'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health disorder with your coworkers?'],
+  //         'Do you think that discussing a mental health disorder with your employer would have negative consequences?': d['Do you think that discussing a mental health disorder with your employer would have negative consequences?'],
+  //       })
+  //     });
+  //     [2017, 2018, 2019].forEach(function (year) {
+  //       vis.data[year].forEach(function (d) {
+  //         yearData.push({
+  //           'What is your gender?': d['What is your gender?'],
+  //           'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //           'Would you feel comfortable discussing a mental health disorder with your coworkers?': d['Would you feel comfortable discussing a mental health issue with your coworkers?']
+  //           //
+  //         })
+  //       })
+  //     });
+  //     vis.data[2014].forEach(function (d) {
+  //       var temp = d['Would you be willing to discuss a mental health issue with your coworkers?'];
+  //       if (temp == "Some of them") {
+  //         temp = "Maybe";
+  //       }
+  //       yearData.push({
+  //         'What is your gender?': d['What is your gender?'],
+  //         'How many employees does your company or organization have?': d['How many employees does your company or organization have?'],
+  //         'Would you feel comfortable discussing a mental health disorder with your coworkers?': temp,
+  //         'Do you think that discussing a mental health disorder with your employer would have negative consequences?': d['Do you think that discussing a mental health disorder with your employer would have negative consequences?'],
+  //       })
+  //     });
+  //     return yearData;
+  //   }
+  // }
 }

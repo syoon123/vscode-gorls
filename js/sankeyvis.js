@@ -22,6 +22,34 @@ class SankeyVis {
       .append("g")
       .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+    let questionOne = "Do you currently have a mental health disorder?";
+    let questionTwo = "Do you feel that being identified as a person with a mental health issue would hurt your career?";
+    let questionThree = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
+
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(questionOne), vis.width / 3 - 10);
+
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", vis.width / 2)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "middle")
+        .text(questionTwo), vis.width / 3 - 10);
+
+    vis.wrap(vis.svg.append("text")
+        .style("font", "10px sans-serif")
+        .attr("x", vis.width)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(questionThree), vis.width / 3 - 10);
+
     vis.wrangleData();
   }
 
@@ -56,7 +84,17 @@ class SankeyVis {
       });
     });
 
-    vis.data[2016].forEach(function(d) {
+    let selectedCompanySize = $('#sankeyCompanySizeSelector').val();
+
+    vis.filteredData = vis.data[2016];
+
+    if (selectedCompanySize) {
+      vis.filteredData = vis.filteredData.filter(
+          d => d['How many employees does your company or organization have?'] === selectedCompanySize
+      )
+    }
+
+    vis.filteredData.forEach(function(d) {
       if (d.questionOne != "" && d.questionTwo != "" && d.questionThree != "") {
         var index = vis.dataOrder[d[questionOne] + d[questionTwo] + d[questionThree]];
         if (index != null) {
@@ -135,34 +173,9 @@ class SankeyVis {
       links: vis.links.map(d => Object.assign({}, d))
     });
 
-    let questionOne = "Do you currently have a mental health disorder?";
-    let questionTwo = "Do you feel that being identified as a person with a mental health issue would hurt your career?";
-    let questionThree = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
-
-    vis.wrap(vis.svg.append("text")
-        .style("font", "10px sans-serif")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text(questionOne), vis.width / 3 - 10);
-
-    vis.wrap(vis.svg.append("text")
-        .style("font", "10px sans-serif")
-        .attr("x", vis.width / 2)
-        .attr("y", 0)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .text(questionTwo), vis.width / 3 - 10);
-
-    vis.wrap(vis.svg.append("text")
-        .style("font", "10px sans-serif")
-        .attr("x", vis.width)
-        .attr("y", 0)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(questionThree), vis.width / 3 - 10);
-
+    if (vis.rects != null) {
+      vis.rects.remove();
+    }
     vis.rects = vis.svg.append("g")
         .selectAll("rect")
         .data(nodes)
@@ -172,6 +185,9 @@ class SankeyVis {
         .attr("height", d => d.y1 - d.y0)
         .attr("width", d => d.x1 - d.x0);
 
+    if (vis.paths != null) {
+      vis.paths.remove();
+    }
     vis.paths = vis.svg.append("g")
         .attr("fill", "none")
         .selectAll("g")
@@ -205,6 +221,10 @@ class SankeyVis {
                 return vis.color(link_d.names[0]);});
         });
 
+    if (vis.yLabels != null || vis.yLabels2 != null) {
+      vis.yLabels.remove();
+      vis.yLabels2.remove();
+    }
     vis.yLabels = vis.svg.append("g")
         .style("font", "10px sans-serif")
         .selectAll("text")
@@ -214,7 +234,8 @@ class SankeyVis {
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < vis.width / 2 ? "start" : "end")
-        .text(d => d.name)
+        .text(d => d.name);
+    vis.yLabels2 = vis.yLabels
         .append("tspan")
         .attr("fill-opacity", 0.7)
         .text(d => ` ${d.value.toLocaleString()}`);
