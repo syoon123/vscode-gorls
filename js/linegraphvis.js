@@ -122,6 +122,7 @@ class LineGraphVis {
         .call(vis.xAxis);
     vis.y.domain([0, d3.max(vis.displayData, d => d.proportion)]);
     vis.svg.select(".y-axis")
+        .transition()
         .call(vis.yAxis);
 
     // Define the D3 line generator
