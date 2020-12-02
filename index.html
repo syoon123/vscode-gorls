@@ -36,7 +36,7 @@
 					<a class="nav-link" href="#call-to-action">call to action</a>
 				</div>
 		</ul>
-		<a class="nav-link" href="#team">About Us</a>
+		<a class="nav-link" href="https://github.com/syoon123/vscode-gorls" target="_blank">Check out the code!</a>
 	</div>
 </nav>
 <div id="intro">
@@ -53,7 +53,8 @@
 					from its employees. So what is the root of the problem? Where can we do better?
 				</p>
 				<p class="source-text">
-					*Data source: "Mental Health in Tech" Surveys from Open Sourcing Mental Illness (2014, 2016, 2017, 2018, 2019)
+					*Data source:
+					<a href="https://osmihelp.org/research" target="_blank">"Mental Health in Tech" Surveys from Open Sourcing Mental Illness (2014, 2016, 2017, 2018, 2019)</a>
 				</p>
 			</div>
 		</div>
@@ -209,21 +210,21 @@
 			</p>
 		</div>
 		<div class="row">
-			<select id='stackedBarChartQuestionSelector' class="custom-select align-self-center" style="width: 100%; margin-right: 2vw" onchange="stackedBarChartVis.wrangleData()">
+			<select id='stackedBarChartQuestionSelector' class="custom-select align-self-center" style="width: 100%; margin-right: 2vw; margin-bottom: 1vh;" onchange="stackedBarChartVis.wrangleData()">
 				<option value="Q1" selected>Would you feel comfortable discussing a mental health disorder with your coworkers?</option>
 				<option value="Q2">Do you think that discussing a mental health disorder with your employer would have negative consequences?</option>
 			</select>
 		</div>
-<!--		<div class="row">-->
-<!--			<select id='stackedBarChartYearSelector' class="custom-select align-self-center" style="width: 23%; margin-right: 2%" onchange="stackedBarChartVis.wrangleData()">-->
-<!--				<option value="All" selected>All years</option>-->
-<!--				<option value="2014">2014</option>-->
-<!--				<option value="2016">2016</option>-->
-<!--				<option value="2017">2017</option>-->
-<!--				<option value="2018">2018</option>-->
-<!--				<option value="2019">2019</option>-->
-<!--			</select>-->
-<!--		</div>-->
+		<div class="row">
+			<select id='stackedBarChartYearSelector' class="custom-select align-self-center" style="width: 23%; margin-right: 2%" onchange="stackedBarChartVis.wrangleData()">
+				<option value="All" selected>All years</option>
+				<option value="2014">2014</option>
+				<option value="2016">2016</option>
+				<option value="2017">2017</option>
+				<option value="2018">2018</option>
+				<option value="2019">2019</option>
+			</select>
+		</div>
 		<div class="row">
 			<div class="col-8">
 				<div id="stackedBarChart"></div>
@@ -289,7 +290,11 @@
 		<div class="row" style="width: 60%">
 			<p class="source-text">
 				*Positive perceptions are mapped to a positive value (+) whereas a response implying a stigmatized
-				or inadequate perception of mental health response is encoded as a negative value (-)
+				or inadequate perception of mental health response is encoded as a negative value (-).
+			</p>
+			<p class="source-text">
+				<span class="policy">Statements pertaining to company policy or official stances are in blue</span>,
+				and <span class="culture">statements pertaining to company culture are in green</span>.
 			</p>
 		</div>
 	</div>
