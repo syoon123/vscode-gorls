@@ -135,9 +135,6 @@ class SankeyVis {
       }
     });
 
-    console.log(vis.filteredData);
-    console.log(vis.tempDisplayData);
-
     vis.displayData = vis.tempDisplayData;
     vis.keys = ["questionOne", "questionTwo", "questionThree"];
 
@@ -183,10 +180,7 @@ class SankeyVis {
     vis.nodes = nodes;
     vis.links = links;
 
-    console.log({nodes, links});
-
-    // vis.data[2016]
-
+    // console.log({nodes, links});
 
     vis.updateVis();
   }
