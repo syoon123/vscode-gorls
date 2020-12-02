@@ -104,14 +104,14 @@ const questions = {
 }
 
 const question_order = [
-  'My company takes mental and physical health equally seriously.',
-  'My employer has formally discussed mental health. ',
-  'My employer provides mental health benefits.',
-  'It is easy to request medical leave for mental health issues.',
-  'My anonymity is protected should I take advantage of employer-provided resources.',
-  'I have not observed negative consequences for being open about mental health issues in the workplace.',
-  'I\'d feel comfortable discussing a mental health issue with my coworkers.',
-  'I\'d feel comfortable discussing a mental health issue with my direct superior.',
+  ['My company takes mental and physical health equally seriously.', 'policy'],
+  ['My employer has formally discussed mental health. ', 'policy'],
+  ['My employer provides mental health benefits.', 'policy'],
+  ['My anonymity is protected should I take advantage of employer-provided resources.', 'policy'],
+  ['It is easy to request medical leave for mental health issues.', 'culture'],
+  ['I have not observed negative consequences for being open about mental health issues in the workplace.', 'culture'],
+  ['I\'d feel comfortable discussing a mental health issue with my coworkers.', 'culture'],
+  ['I\'d feel comfortable discussing a mental health issue with my direct superior.', 'culture'],
 ]
 
 class GapsVis {
@@ -161,7 +161,7 @@ class GapsVis {
 
     vis.xAxis = d3.axisLeft()
       .scale(vis.x0)
-      .tickFormat((q, index) => question_order[index]);
+      .tickFormat((q, index) => question_order[index][0]);
 
     vis.yAxis = d3.axisTop()
       .scale(vis.y)
@@ -185,17 +185,17 @@ class GapsVis {
       })
       .style("text-anchor", "right");
 
-    // Create legend
+    // Create legends
     vis.l = vis.svg.append("g")
       .attr("class", "g-legend")
-      .attr("transform", "translate("+ (0) + "," + (40) + ")");
+      .attr("transform", "translate(0,0)");
     const size = 15;
     vis.l.selectAll("legendBoxes")
       .data(vis.genders)
       .enter()
       .append("rect")
       .attr("x", function(d,i) { return i * (size + 70) + vis.width * 0.59 })
-      .attr("y", -120)
+      .attr("y", -80)
       .attr("width", size)
       .attr("height", size)
       .style("fill", function(d) { return vis.color(d) });
@@ -204,7 +204,7 @@ class GapsVis {
       .enter()
       .append("text")
       .attr("x", function(d,i) { return size + 5 + i * (size + 70)  + vis.width * 0.59 })
-      .attr("y", -120 + size / 2)
+      .attr("y", -80 + size / 2)
       .style("fill", function(d){ return vis.color(d)})
       .text(function(d){ return d})
       .attr("text-anchor", "left")
@@ -244,8 +244,8 @@ class GapsVis {
     vis.counts = {}
     const qs = selectedYear === '2014' || selectedYear === '2016' ? questions[selectedYear] : questions['other'];
     question_order.forEach(q => {
-      vis.counts[q] = {
-        'positive_responses': qs[q].positive_responses,
+      vis.counts[q[0]] = {
+        'positive_responses': qs[q[0]].positive_responses,
         "total": 0,
         "m": 0,
         "f": 0,
@@ -269,21 +269,21 @@ class GapsVis {
         let q;
         if (selectedYear === '') {
           Object.keys(questions).forEach(yr => {
-            q = questions[yr][question].question;
-            if (vis.counts[question].positive_responses.includes(d[q])) {
-              vis.counts[question].total += 1;
-              vis.counts[question][gender] += 1;
+            q = questions[yr][question[0]].question;
+            if (vis.counts[question[0]].positive_responses.includes(d[q])) {
+              vis.counts[question[0]].total += 1;
+              vis.counts[question[0]][gender] += 1;
             }
           })
         } else {
           if (selectedYear === '2014' || selectedYear === '2016') {
-            q = questions[selectedYear][question].question;
+            q = questions[selectedYear][question[0]].question;
           } else {
-            q = questions['other'][question].question;
+            q = questions['other'][question[0]].question;
           }
-          if (vis.counts[question].positive_responses.includes(d[q])) {
-            vis.counts[question].total += 1;
-            vis.counts[question][gender] += 1;
+          if (vis.counts[question[0]].positive_responses.includes(d[q])) {
+            vis.counts[question[0]].total += 1;
+            vis.counts[question[0]][gender] += 1;
           }
         }
       });
@@ -336,7 +336,9 @@ class GapsVis {
     // Call axis functions with new domains
     vis.svg.select(".x-axis").call(vis.xAxis)
       .selectAll('text')
-      .attr('class', 'tickLabel')
+      .attr('class', function(q, index) {
+        return `tickLabel ${question_order[index][1]}`
+      })
       .attr('transform', function() {
         return `translate(${-vis.width * 0.25}, 0)`
       });

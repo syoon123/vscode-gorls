@@ -32,6 +32,10 @@ html {
   padding: 10vh;
 }
 
+#call-to-action {
+  margin-top: 5vh;
+}
+
 #dots {
   width: 50vw;
   height: 100vh;
@@ -113,4 +117,12 @@ body, .axisLabel, .tickLabel {
 
 .tickLabel {
   font-size: xx-small;
+}
+
+.policy {
+  color: #223c82;
+}
+
+.culture {
+  color: #004400;
 }
