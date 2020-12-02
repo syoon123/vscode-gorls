@@ -26,6 +26,11 @@ class SankeyVis {
     let questionTwo = "Do you feel that being identified as a person with a mental health issue would hurt your career?";
     let questionThree = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
 
+    // let questionOne = "Do you currently have a mental health disorder?";
+    // let questionOne = "Have you ever sought treatment for a mental health disorder from a mental health professional?";
+    // let questionTwo = "Does your employer provide mental health benefits as part of healthcare coverage?";
+    // let questionThree = "Would you feel comfortable discussing a mental health issue with your direct supervisor(s)?";
+
     vis.wrap(vis.svg.append("text")
         .style("font", "10px sans-serif")
         .attr("x", 0)
@@ -60,12 +65,25 @@ class SankeyVis {
     let questionTwo = "Do you feel that being identified as a person with a mental health issue would hurt your career?";
     let questionThree = "Would you feel comfortable discussing a mental health disorder with your coworkers?";
 
-    // let questionOneValues = Array.from(d3.group(vis.data[2016], d =>d[questionOne]), ([key, value]) => (key)).filter(e => e !== "");
-    // let questionTwoValues = Array.from(d3.group(vis.data[2016], d =>d[questionTwo]), ([key, value]) => (key)).filter(e => e !== "");
-    // let questionThreeValues = Array.from(d3.group(vis.data[2016], d =>d[questionThree]), ([key, value]) => (key)).filter(e => e !== "");
     let questionOneValues = ["Yes", "Maybe", "No"];
     let questionTwoValues = ["Yes, it has", "Yes, I think it would", "Maybe", "No, I don't think it would", "No, it hasn't"];
     let questionThreeValues = ["Yes", "Maybe", "No"];
+
+    // let questionOne = "Do you currently have a mental health disorder?";
+    // let questionTwo = "Does your employer provide mental health benefits as part of healthcare coverage?";
+    // let questionThree = "Would you feel comfortable discussing a mental health disorder with your direct supervisor(s)?";
+    //
+    // let questionOneValues = ["Yes", "Maybe", "No"];
+    // let questionTwoValues = ["Yes", "I don't know", "No"];
+    // let questionThreeValues = ["Yes", "Maybe", "No"];
+
+    // let questionOne = "Have you ever sought treatment for a mental health disorder from a mental health professional?";
+    // let questionTwo = "Does your employer provide mental health benefits as part of healthcare coverage?";
+    // let questionThree = "Would you feel comfortable discussing a mental health issue with your direct supervisor(s)?";
+    //
+    // let questionOneValues = ["Yes", "No"];
+    // let questionTwoValues = ["Yes", "I don't know", "No"];
+    // let questionThreeValues = ["Yes", "Maybe", "No"];
 
     vis.dataOrder = {};
     vis.tempDisplayData = [];
@@ -85,6 +103,13 @@ class SankeyVis {
     });
 
     let selectedCompanySize = $('#sankeyCompanySizeSelector').val();
+    let selectedYear = $('#sankeyYearSelector').val();
+
+    // vis.filteredData = vis.aggregate(vis.data);
+    // console.log(vis.filteredData);
+    // if (selectedYear) {
+    //   vis.filteredData = vis.data[selectedYear];
+    // }
 
     vis.filteredData = vis.data[2016];
 
@@ -95,13 +120,23 @@ class SankeyVis {
     }
 
     vis.filteredData.forEach(function(d) {
-      if (d.questionOne != "" && d.questionTwo != "" && d.questionThree != "") {
-        var index = vis.dataOrder[d[questionOne] + d[questionTwo] + d[questionThree]];
+      if (d[questionOne] != "" && d[questionTwo] != "" && d[questionThree] != "") {
+        var q1Response = d[questionOne];
+        if (q1Response == '0' || q1Response == 'FALSE') {
+          q1Response = 'No';
+        }
+        else if (q1Response == '1' || q1Response == 'TRUE') {
+          q1Response = 'Yes';
+        }
+        var index = vis.dataOrder[q1Response + d[questionTwo] + d[questionThree]];
         if (index != null) {
           vis.tempDisplayData[index].value += 1;
         }
       }
     });
+
+    console.log(vis.filteredData);
+    console.log(vis.tempDisplayData);
 
     vis.displayData = vis.tempDisplayData;
     vis.keys = ["questionOne", "questionTwo", "questionThree"];
@@ -160,6 +195,7 @@ class SankeyVis {
     let vis = this;
 
     vis.color = d3.scaleOrdinal(["No", "Yes", "Maybe"], ['#B4A3E4','#63B8C0','#FFCB5E']).unknown("#ccc");
+    // vis.color = d3.scaleOrdinal(["Yes", "No"], ['#B4A3E4','#63B8C0']).unknown("#ccc");
 
     vis.sankey = d3.sankey()
         .nodeSort(null)
@@ -272,6 +308,12 @@ class SankeyVis {
         }
       }
     });
+  }
+
+  aggregate(gapsData) {
+    Object.values = Object.values || function(o){return Object.keys(o).map(function(k){return o[k]})};
+    function flatten(a) { return [].concat.apply([], a); }
+    return flatten(Object.values(gapsData));
   }
 }
 

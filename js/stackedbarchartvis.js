@@ -85,12 +85,6 @@ class StackedBarChartVis {
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle");
 
-    // Tooltip
-    vis.tooltip = d3.select('body')
-        .append('div')
-        .attr('class', "tooltip")
-        .attr('id', 'stackedBarTooltip');
-
     vis.wrangleData();
   }
 
