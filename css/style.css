@@ -49,12 +49,12 @@ html {
 
 #stackedBarChart {
   width: 100%;
-  height: 60vh;
+  height: 75vh;
 }
 
 #pieChart {
   width: 100%;
-  height: 60vh;
+  height: 75vh;
 }
 
 #sankey {

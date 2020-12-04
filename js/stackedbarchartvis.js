@@ -51,6 +51,34 @@ class StackedBarChartVis {
     vis.g = vis.svg.append('g')
         .attr('transform', `translate(0, 80)`);
 
+    // Add x-axis
+    vis.g.append("g")
+      .attr("class", "axis x-axis")
+      .attr("transform", "translate(0," + vis.height + ")");
+
+    // Add x-axis label
+    vis.g.append("text")
+      .attr("class", "axisLabel")
+      .attr("transform",
+        "translate(" + (vis.width/2) + " ," +
+        (vis.height + vis.margin.top + 20) + ")")
+      .style("text-anchor", "middle")
+      .text("Company Size");
+
+    // Add y-axis
+    vis.g.append("g")
+      .attr("class", "axis y-axis");
+
+    // Add y-axis label
+    vis.g.append("text")
+      .attr("class", "axisLabel")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - vis.margin.left)
+      .attr("x", 0 - (vis.height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("% of Survey Respondents");
+
     // Create legend
     vis.l = vis.svg.append("g")
         .attr("class", "g-legend")
@@ -284,50 +312,13 @@ class StackedBarChartVis {
         .duration(500)
         .remove();
 
-    // Add x-axis
-    vis.g.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + vis.height + ")")
+    // Call x-axis
+    vis.svg.select('.x-axis')
         .call(d3.axisBottom(vis.x0));
 
-    // Add x-axis label
-    vis.g.append("text")
-        .attr("class", "axisLabel")
-        .attr("transform",
-            "translate(" + (vis.width/2) + " ," +
-            (vis.height + vis.margin.top + 20) + ")")
-        .style("text-anchor", "middle")
-        .text("Company Size");
-
-    // Add y-axis
-    vis.g.append("g")
-        .attr("class", "axis")
+    // Call y-axis
+    vis.svg.select('.y-axis')
         .call(d3.axisLeft(vis.y).ticks(null, "s"));
-
-    // Add y-axis label
-    vis.g.append("text")
-        .attr("class", "axisLabel")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - vis.margin.left)
-        .attr("x", 0 - (vis.height / 2))
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .text("% of Survey Respondents");
-
-    // add title
-    if (vis.title != null) {
-      vis.title.remove();
-    }
-    vis.title = vis.svg.append('g')
-        .attr('class', 'title stacked-bar-chart-title')
-        .append('text')
-        .text(vis.selectedCategoryLabel)
-        .attr("x", vis.width / 2)
-        .attr("y", 0)
-        .attr("font-weight", "bold")
-        .style("font-size", "12px")
-        .attr('text-anchor', 'middle')
-        .call(vis.wrap, vis.width);
   }
 
   wrap(text, width) {
