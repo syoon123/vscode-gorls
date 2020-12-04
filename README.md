@@ -8,7 +8,7 @@ Visit [this link](https://syoon123.github.io/vscode-gorls/) to see our finished 
 
 ***Repository contents:***
 - `css/` The CSS for this project was implemented using Bootstrap and our own personal CSS code. All CSS code can be found in the CSS folder. 
-- `data/` All data used was obtained from Open Sourcing Mental Illness (OSMI). More specifically, we used [OSMI](https://osmihelp.org/)’s Mental Health in Tech Surveys from 2014, 2016, 2017, 2018, and 2019. The CSV files for these surveys can be found in our data folder along with the CSV files for the cleaned versions of each survey. We cleaned the survey data using our own Python program that iterates over each survey response and standardizes the gender responses.  
+- `data/` All data used was obtained from [Open Sourcing Mental Illness (OSMI)](https://osmihelp.org/). More specifically, we used OSMI’s Mental Health in Tech Surveys from 2014, 2016, 2017, 2018, and 2019. The CSV files for these surveys can be found in our data folder along with the CSV files for the cleaned versions of each survey. We cleaned the survey data using our own Python program that iterates over each survey response and standardizes the gender responses.  
 - `img/` Cover image from [Teen Vogue](https://www.teenvogue.com/story/ways-you-might-be-perpetuating-mental-health-stigma)
 - `js/` All Javascript files used to create our visualizations and main interface. We utilized the JavaScript D3 library to build our visualizations. 
 - `index.html`
